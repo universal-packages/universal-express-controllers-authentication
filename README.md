@@ -4,7 +4,7 @@
 [![Testing](https://github.com/universal-packages/universal-express-controllers-authentication/actions/workflows/testing.yml/badge.svg)](https://github.com/universal-packages/universal-express-controllers-authentication/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/universal-packages/universal-express-controllers-authentication/branch/main/graph/badge.svg?token=CXPJSN8IGL)](https://codecov.io/gh/universal-packages/universal-express-controllers-authentication)
 
-[universal-authentication]() implementation on top of [universal-express-controllers](https://github.com/universal-packages/universal-express-controllers)
+[universal-authentication](https://github.com/universal-packages/universal-authentication) implementation on top of [universal-express-controllers](https://github.com/universal-packages/universal-express-controllers)
 
 ## Install
 
