@@ -1,8 +1,8 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import fetch from 'node-fetch'
-import { initialize } from '../../../src'
-import { CURRENT_AUTHENTICATION } from '../../../src/express-controllers-authentication'
-import TestAuthenticatable from '../../__fixtures__/TestAuthenticatable'
+import { initialize } from '../../src'
+import { CURRENT_AUTHENTICATION } from '../../src/express-controllers-authentication'
+import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 const port = 4000 + Number(process.env['JEST_WORKER_ID'])
 
@@ -12,20 +12,12 @@ afterEach(async (): Promise<void> => {
 })
 
 beforeAll(async (): Promise<void> => {
-  await initialize(
-    {
-      debug: true,
-      dynamicsLocation: './tests/__fixtures__/dynamics',
-      secret: 'my-secret',
-      email: { enableConfirmation: true, enforceConfirmation: true }
-    },
-    TestAuthenticatable
-  )
+  await initialize({ debug: true, dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
 })
 
 describe('AuthenticationController', (): void => {
   describe('log-in', (): void => {
-    describe('when good credentials are provided', (): void => {
+    describe('when a successful log in happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
@@ -35,22 +27,10 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/log-in`, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email-confirmed', password: 'password' })
+          body: JSON.stringify({ credential: 'email', password: 'password' })
         })
         expect(response.status).toEqual(200)
         expect(await response.json()).toMatchObject({ authenticatable: {}, sessionToken: '' })
-      })
-    })
-
-    describe('when no credentials are provided', (): void => {
-      it('returns bad request', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
-
-        let response = await fetch(`http://localhost:${port}/authentication/log-in`, { method: 'post' })
-        expect(response.status).toEqual(400)
       })
     })
 
@@ -71,6 +51,16 @@ describe('AuthenticationController', (): void => {
     })
 
     describe('when the log in is still processing because of multi factor or confirmation', (): void => {
+      beforeAll((): void => {
+        CURRENT_AUTHENTICATION.instance.options.email.enableConfirmation = true
+        CURRENT_AUTHENTICATION.instance.options.email.enforceConfirmation = true
+      })
+
+      afterAll((): void => {
+        CURRENT_AUTHENTICATION.instance.options.email.enableConfirmation = false
+        CURRENT_AUTHENTICATION.instance.options.email.enforceConfirmation = false
+      })
+
       it('returns accepted', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
@@ -90,6 +80,19 @@ describe('AuthenticationController', (): void => {
             credentialKind: 'email'
           }
         })
+      })
+    })
+
+    describe('when bad parameters are passed', (): void => {
+      it('returns bad request', async (): Promise<void> => {
+        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
+        app.on('request/error', console.log)
+        await app.prepare()
+        await app.run()
+
+        let response = await fetch(`http://localhost:${port}/authentication/log-in`, { method: 'post' })
+        expect(response.status).toEqual(400)
+        expect(await response.json()).toMatchObject({ parameters: 'request/credential was not provided and is not optional' })
       })
     })
   })
