@@ -1,10 +1,45 @@
-import { LogInPayload } from '@universal-packages/authentication'
+import { ConnectProviderPayload, LogInPayload } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
 import { CURRENT_AUTHENTICATION } from '../express-controllers-authentication'
 
 @RegisterController()
 export default class AuthenticationController extends BaseController {
+  @RegisterAction('PATCH', 'connectProvider')
+  public async connectProvider(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      try {
+        const parameters = this.request.parameters.shape<ConnectProviderPayload>('provider', 'token')
+
+        try {
+          const result = await CURRENT_AUTHENTICATION.instance.performDynamic('connect-provider', { authenticatable, ...parameters })
+
+          switch (result.status) {
+            case 'failure':
+              this.status('BAD_REQUEST').json({ message: result.message })
+              break
+            case 'warning':
+              this.status('ACCEPTED').json({ message: result.message })
+              break
+            case 'success':
+              const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
+
+              this.json(rendered)
+              break
+          }
+        } catch (error) {
+          this.status('BAD_REQUEST').json({ provider: 'unknown' })
+        }
+      } catch (error) {
+        this.status('BAD_REQUEST').json({ parameters: error.message })
+      }
+    } else {
+      this.status('UNAUTHORIZED')
+    }
+  }
+
   @RegisterAction('POST', 'logIn')
   public async logIn(): Promise<any> {
     try {

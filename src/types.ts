@@ -2,7 +2,7 @@ import { AuthDynamicNames as AN, Authenticatable, Authentication, Authentication
 import { Parameters } from '@universal-packages/parameters'
 import { Request, Response } from 'express'
 
-export type RouteName = 'logIn' | 'signUp' | 'verifyUnlock'
+export type RouteName = 'connectProvider' | 'logIn' | 'signUp' | 'verifyUnlock'
 
 export interface ExpressControllerAuthenticationOptions extends AuthenticationOptions {
   rootPath?: string
@@ -24,14 +24,19 @@ export interface CurrentAuthentication {
 }
 
 export interface AuthDynamicNames extends AN {
+  'authenticatable-from-request': { payload: AuthenticatableFromRequestPayload; result: Authenticatable }
   'render-authentication-response': { payload: RenderAuthenticationResponsePayload; result: Record<string, any> }
   'set-session': { payload: SetSessionPayload; result: string }
   'shape-sign-up-parameters': { payload: ShapeSignUpParametersPayload; result: SignUpPayload }
 }
 
+export interface AuthenticatableFromRequestPayload {
+  request: Request
+}
+
 export interface RenderAuthenticationResponsePayload {
   authenticatable: Authenticatable
-  sessionToken: string
+  sessionToken?: string
 }
 
 export interface SetSessionPayload {

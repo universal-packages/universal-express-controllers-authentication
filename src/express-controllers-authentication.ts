@@ -8,6 +8,7 @@ export async function initialize(options: ExpressControllerAuthenticationOptions
   if (!CURRENT_AUTHENTICATION.instance) {
     const routesOptions = { ...options.routes }
     const finalRoutesOptions: AuthenticationRoutes = {
+      connectProvider: { enable: true, path: 'connect-provider', ...routesOptions.connectProvider },
       logIn: { enable: true, path: 'log-in', ...routesOptions.logIn },
       signUp: { enable: true, path: 'sign-up', ...routesOptions.signUp },
       verifyUnlock: { enable: true, path: 'verify-unlock', ...routesOptions.verifyUnlock }

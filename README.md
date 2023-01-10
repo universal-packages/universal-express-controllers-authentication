@@ -1,4 +1,4 @@
-# Express controllers authentication
+# Express Controllers Authentication
 
 [![npm version](https://badge.fury.io/js/@universal-packages%2Fexpress-controllers-authentication.svg)](https://www.npmjs.com/package/@universal-packages/express-controllers-authentication)
 [![Testing](https://github.com/universal-packages/universal-express-controllers-authentication/actions/workflows/testing.yml/badge.svg)](https://github.com/universal-packages/universal-express-controllers-authentication/actions/workflows/testing.yml)
