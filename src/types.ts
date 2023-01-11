@@ -2,7 +2,7 @@ import { AuthDynamicNames as AN, Authenticatable, Authentication, Authentication
 import { Parameters } from '@universal-packages/parameters'
 import { Request, Response } from 'express'
 
-export type RouteName = 'connectProvider' | 'continueWithProvider' | 'invite' | 'logIn' | 'requestConfirmation' | 'signUp' | 'verifyUnlock'
+export type RouteName = 'connectProvider' | 'continueWithProvider' | 'invite' | 'logIn' | 'requestConfirmation' | 'requestCorroboration' | 'signUp' | 'verifyUnlock'
 
 export interface ExpressControllerAuthenticationOptions extends AuthenticationOptions {
   rootPath?: string

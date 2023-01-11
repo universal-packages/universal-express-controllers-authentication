@@ -184,4 +184,20 @@ export default class AuthenticationController extends BaseController {
       this.status('BAD_REQUEST').json({ parameters: error.message })
     }
   }
+
+  @RegisterAction('PUT', 'requestCorroboration')
+  public async requestCorroboration(): Promise<any> {
+    try {
+      const parameters = this.request.parameters.shape<InviteAuthenticatablePayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-corroboration', parameters)
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message })
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
 }

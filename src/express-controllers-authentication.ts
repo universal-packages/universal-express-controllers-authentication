@@ -13,6 +13,7 @@ export async function initialize(options: ExpressControllerAuthenticationOptions
       invite: { enable: true, path: 'invite', ...routesOptions.invite },
       logIn: { enable: true, path: 'log-in', ...routesOptions.logIn },
       requestConfirmation: { enable: true, path: 'request-confirmation', ...routesOptions.requestConfirmation },
+      requestCorroboration: { enable: true, path: 'request-corroboration', ...routesOptions.requestCorroboration },
       signUp: { enable: true, path: 'sign-up', ...routesOptions.signUp },
       verifyUnlock: { enable: true, path: 'verify-unlock', ...routesOptions.verifyUnlock }
     }
