@@ -26,58 +26,72 @@ beforeAll(async (): Promise<void> => {
 })
 
 describe('AuthenticationController', (): void => {
-  describe('continue-with-provider', (): void => {
-    describe('when a successful connection happens', (): void => {
-      it('returns ok and the rendered session data', async (): Promise<void> => {
+  describe('invite', (): void => {
+    describe('when the invitation is successful', (): void => {
+      beforeAll((): void => {
+        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpInvitations = true
+      })
+
+      afterAll((): void => {
+        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpInvitations = false
+      })
+
+      it('returns ok', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
+        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
+          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
+          next()
+        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
-          method: 'post',
+        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+          method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'token' })
+          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
         })
 
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 123 }, sessionToken: '' })
       })
     })
 
-    describe('when an error occurs when calling the provider', (): void => {
+    describe('when invitations are not enabled', (): void => {
       it('returns fail', async (): Promise<void> => {
+        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
+        app.on('request/error', console.log)
+        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
+          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
+          next()
+        })
+        await app.prepare()
+        await app.run()
+
+        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+          method: 'put',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
+        })
+
+        expect(response.status).toEqual(400)
+        expect(await response.json()).toMatchObject({ message: 'invitations-disabled' })
+      })
+    })
+
+    describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
+      it('returns unauthorized', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
-          method: 'post',
+        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+          method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'error' })
+          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
         })
 
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'provider-error' })
-      })
-    })
-
-    describe('when the provider does not exists', (): void => {
-      it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
-
-        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'nop', token: 'token' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ provider: 'unknown' })
+        expect(response.status).toEqual(401)
       })
     })
 
@@ -85,17 +99,23 @@ describe('AuthenticationController', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
+        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
+          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 80085)
+          next()
+        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
-          method: 'post',
+        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+          method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ other: false })
+          body: JSON.stringify({ credential: "ma'man", credentialKind: 'other' })
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ parameters: 'request/provider was not provided and is not optional' })
+        expect(await response.json()).toMatchObject({
+          parameters: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "other" was given'
+        })
       })
     })
   })

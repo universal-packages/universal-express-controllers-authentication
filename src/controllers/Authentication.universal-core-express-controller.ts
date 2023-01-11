@@ -1,4 +1,4 @@
-import { ConnectProviderPayload, ContinueWithProviderPayload, LogInPayload } from '@universal-packages/authentication'
+import { ConnectProviderPayload, ContinueWithProviderPayload, InviteAuthenticatablePayload, LogInPayload } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
 import { CURRENT_AUTHENTICATION } from '../express-controllers-authentication'
@@ -40,7 +40,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PATCH', 'continueWithProvider')
+  @RegisterAction('POST', 'continueWithProvider')
   public async continueWithProvider(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<ContinueWithProviderPayload>('provider', 'token')
@@ -72,6 +72,28 @@ export default class AuthenticationController extends BaseController {
       }
     } catch (error) {
       this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
+
+  @RegisterAction('PUT', 'invite')
+  public async invite(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      try {
+        const parameters = this.request.parameters.shape<InviteAuthenticatablePayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
+        const result = await CURRENT_AUTHENTICATION.instance.performDynamic('invite-authenticatable', { inviterId: authenticatable.id, ...parameters })
+
+        switch (result.status) {
+          case 'failure':
+            this.status('BAD_REQUEST').json({ message: result.message })
+            break
+        }
+      } catch (error) {
+        this.status('BAD_REQUEST').json({ parameters: error.message })
+      }
+    } else {
+      this.status('UNAUTHORIZED')
     }
   }
 
