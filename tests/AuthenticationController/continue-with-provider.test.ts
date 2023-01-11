@@ -26,26 +26,22 @@ beforeAll(async (): Promise<void> => {
 })
 
 describe('AuthenticationController', (): void => {
-  describe('connect-provider', (): void => {
+  describe('continue-with-provider', (): void => {
     describe('when a successful connection happens', (): void => {
-      it('returns ok and the rendered authenticatable data', async (): Promise<void> => {
+      it('returns ok and the rendered session data', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
-          next()
-        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
+        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
           method: 'patch',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ provider: 'universal', token: 'token' })
         })
 
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 123 } })
+        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 123 }, sessionToken: '' })
       })
     })
 
@@ -53,14 +49,10 @@ describe('AuthenticationController', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
-          next()
-        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
+        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
           method: 'patch',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ provider: 'universal', token: 'error' })
@@ -71,40 +63,14 @@ describe('AuthenticationController', (): void => {
       })
     })
 
-    describe('when the provider is already connected', (): void => {
-      it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 80085)
-          next()
-        })
-        await app.prepare()
-        await app.run()
-
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'token' })
-        })
-
-        expect(response.status).toEqual(202)
-        expect(await response.json()).toMatchObject({ message: 'already-connected' })
-      })
-    })
-
     describe('when the provider does not exists', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 80085)
-          next()
-        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
+        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
           method: 'patch',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ provider: 'nop', token: 'token' })
@@ -115,35 +81,14 @@ describe('AuthenticationController', (): void => {
       })
     })
 
-    describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
-      it('returns unauthorized', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
-
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'token' })
-        })
-
-        expect(response.status).toEqual(401)
-      })
-    })
-
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 80085)
-          next()
-        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
+        let response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, {
           method: 'patch',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ other: false })

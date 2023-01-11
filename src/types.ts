@@ -1,8 +1,8 @@
-import { AuthDynamicNames as AN, Authenticatable, Authentication, AuthenticationOptions, LogInPayload, SignUpPayload } from '@universal-packages/authentication'
+import { AuthDynamicNames as AN, Authenticatable, Authentication, AuthenticationOptions, SignUpPayload } from '@universal-packages/authentication'
 import { Parameters } from '@universal-packages/parameters'
 import { Request, Response } from 'express'
 
-export type RouteName = 'connectProvider' | 'logIn' | 'signUp' | 'verifyUnlock'
+export type RouteName = 'connectProvider' | 'continueWithProvider' | 'logIn' | 'signUp' | 'verifyUnlock'
 
 export interface ExpressControllerAuthenticationOptions extends AuthenticationOptions {
   rootPath?: string
@@ -10,7 +10,7 @@ export interface ExpressControllerAuthenticationOptions extends AuthenticationOp
 }
 
 export type AuthenticationRoutes = {
-  [route in RouteName]: AuthenticationRoute
+  [route in RouteName]?: AuthenticationRoute
 }
 
 export interface AuthenticationRoute {
