@@ -26,38 +26,46 @@ beforeAll(async (): Promise<void> => {
 })
 
 describe('AuthenticationController', (): void => {
-  describe('invite', (): void => {
-    describe('when the invitation is successful', (): void => {
+  describe('request-confirmation', (): void => {
+    describe('when the confirmation request is successful', (): void => {
       beforeAll((): void => {
-        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpInvitations = true
+        CURRENT_AUTHENTICATION.instance.options.email.enableConfirmation = true
       })
 
       afterAll((): void => {
-        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpInvitations = false
+        CURRENT_AUTHENTICATION.instance.options.email.enableConfirmation = false
       })
 
       it('returns ok', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
+          request['authenticatable'] = TestAuthenticatable.findByCredential('email-unconfirmed')
           next()
         })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
+          body: JSON.stringify({ credentialKind: 'email' })
         })
 
         expect(response.status).toEqual(200)
       })
     })
 
-    describe('when invitations are not enabled', (): void => {
-      it('returns fail', async (): Promise<void> => {
+    describe('when the authenticatable is already confirmed', (): void => {
+      beforeAll((): void => {
+        CURRENT_AUTHENTICATION.instance.options.email.enableConfirmation = true
+      })
+
+      afterAll((): void => {
+        CURRENT_AUTHENTICATION.instance.options.email.enableConfirmation = false
+      })
+
+      it('returns accepted and does nothing', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
@@ -67,31 +75,35 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
+          body: JSON.stringify({ credentialKind: 'email' })
         })
 
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'invitations-disabled' })
+        expect(response.status).toEqual(202)
       })
     })
 
-    describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
-      it('returns unauthorized', async (): Promise<void> => {
+    describe('when confirmations are not enabled', (): void => {
+      it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
+        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
+          request['authenticatable'] = TestAuthenticatable.findByCredential('email-unconfirmed')
+          next()
+        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
+          body: JSON.stringify({ credentialKind: 'email' })
         })
 
-        expect(response.status).toEqual(401)
+        expect(response.status).toEqual(400)
+        expect(await response.json()).toMatchObject({ message: 'confirmation-disabled' })
       })
     })
 
@@ -100,21 +112,21 @@ describe('AuthenticationController', (): void => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
+          request['authenticatable'] = TestAuthenticatable.findByCredential('email-unconfirmed')
           next()
         })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'other' })
+          body: JSON.stringify({ credentialKind: 'nop' })
         })
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "other" was given'
+          parameters: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "nop" was given'
         })
       })
     })

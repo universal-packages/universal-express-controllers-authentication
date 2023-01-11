@@ -163,4 +163,25 @@ export default class AuthenticationController extends BaseController {
       this.status('BAD_REQUEST').json({ parameters: error.message })
     }
   }
+
+  @RegisterAction('PUT', 'requestConfirmation')
+  public async requestConfirmation(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    try {
+      const parameters = this.request.parameters.shape<InviteAuthenticatablePayload>({ credential: { optional: true }, credentialKind: { enum: new Set(['email', 'phone']) } })
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-confirmation', { authenticatable, ...parameters })
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message })
+          break
+        case 'warning':
+          this.status('ACCEPTED').json({ message: result.message })
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
 }
