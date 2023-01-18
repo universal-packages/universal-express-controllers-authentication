@@ -1,4 +1,11 @@
-import { ConnectProviderPayload, ContinueWithProviderPayload, InviteAuthenticatablePayload, LogInPayload } from '@universal-packages/authentication'
+import {
+  ConnectProviderPayload,
+  ContinueWithProviderPayload,
+  InviteAuthenticatablePayload,
+  LogInPayload,
+  RequestCorroborationPayload,
+  RequestMultiFactorPayload
+} from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
 import { CURRENT_AUTHENTICATION } from '../express-controllers-authentication'
@@ -188,12 +195,31 @@ export default class AuthenticationController extends BaseController {
   @RegisterAction('PUT', 'requestCorroboration')
   public async requestCorroboration(): Promise<any> {
     try {
-      const parameters = this.request.parameters.shape<InviteAuthenticatablePayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
+      const parameters = this.request.parameters.shape<RequestCorroborationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
       const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-corroboration', parameters)
 
       switch (result.status) {
         case 'failure':
           this.status('BAD_REQUEST').json({ message: result.message })
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
+
+  @RegisterAction('PUT', 'requestMultiFactor')
+  public async requestMultiFactor(): Promise<any> {
+    try {
+      const parameters = this.request.parameters.shape<RequestMultiFactorPayload>('identifier', { credentialKind: { enum: new Set(['email', 'phone']) } })
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-multi-factor', parameters)
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message })
+          break
+        case 'warning':
+          this.status('ACCEPTED').json({ message: result.message })
           break
       }
     } catch (error) {

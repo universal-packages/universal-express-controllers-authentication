@@ -41,7 +41,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 123 }, sessionToken: '' })
+        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 'any.nothing' }, sessionToken: '' })
       })
     })
 

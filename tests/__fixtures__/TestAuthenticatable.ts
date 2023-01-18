@@ -4,83 +4,15 @@ export default class TestAuthenticatable implements Authenticatable {
   public static lastInstance: TestAuthenticatable
 
   public static readonly findByCredential = jest.fn().mockImplementation((credential: string): TestAuthenticatable => {
-    const instance = new TestAuthenticatable()
-
-    instance.password = 'password'
-    instance.createdAt = new Date(Date.now() - 10000)
-
-    const credentialKind: CredentialKind = credential.split('-')[0] as any
-    instance[credentialKind] = credential
-
-    const directive = credential.split('-').splice(1).join('-')
-
-    switch (directive) {
-      case 'about-to-lock':
-        instance.failedLogInAttempts = 2
-        break
-
-      case 'nop':
-        return
-
-      case 'confirmed':
-        instance[`${credentialKind}ConfirmedAt`] = new Date()
-        break
-
-      case 'locked':
-        instance.failedLogInAttempts = 3
-        instance.lockedAt = new Date()
-        break
-
-      case 'multi-factor-enabled':
-        instance.multiFactorEnabled = true
-        break
-
-      case 'multi-factor-active':
-        instance.multiFactorActiveAt = new Date(Date.now() - 10000)
-        break
-
-      case 'multi-factor-active-confirmed':
-        instance[`${credentialKind}ConfirmedAt`] = new Date()
-        instance.multiFactorActiveAt = new Date(Date.now() - 10000)
-        break
-
-      case 'multi-factor-active-unconfirmed':
-        instance[`${credentialKind}ConfirmedAt`] = null
-        instance.multiFactorActiveAt = new Date(Date.now() - 10000)
-        break
-
-      case 'multi-factor-inactive':
-        instance.multiFactorActiveAt = null
-        break
-
-      case 'no-password':
-        instance.encryptedPassword = null
-        break
-
-      case 'ready-to-unlock':
-        instance.failedLogInAttempts = 5
-        instance.lockedAt = new Date(Date.now() - 10000)
-        break
-
-      case 'unconfirmed':
-        instance[`${credentialKind}ConfirmedAt`] = null
-        break
-    }
-
-    return instance
+    return this.instanceFromInput(credential)
   })
 
-  public static readonly findByProviderId = jest.fn().mockImplementation((provider: string, id: string | number | bigint): TestAuthenticatable => {
-    if (id === 80085) {
-      const instance = new TestAuthenticatable()
-      instance.password = 'password'
-      instance.createdAt = new Date(Date.now() - 10000)
-      instance[`${provider}Id`] = id
+  public static readonly findById = jest.fn().mockImplementation((id: string | number | bigint): TestAuthenticatable => {
+    return this, this.instanceFromInput(String(id))
+  })
 
-      return instance
-    } else {
-      return
-    }
+  public static readonly findByProviderId = jest.fn().mockImplementation((_provider: string, id: string | number | bigint): TestAuthenticatable => {
+    return this, this.instanceFromInput(String(id))
   })
 
   public static readonly existsWithCredential = jest.fn().mockImplementation((_credentialKind: CredentialKind, credential: string): boolean => {
@@ -139,4 +71,78 @@ export default class TestAuthenticatable implements Authenticatable {
   public readonly save = jest.fn().mockImplementation(() => {
     if (!this.createdAt) this.createdAt = new Date()
   })
+
+  private static instanceFromInput(input: string): TestAuthenticatable {
+    const instance = new TestAuthenticatable()
+    const inputSplit = input.split('.')
+
+    instance.password = 'password'
+    instance.createdAt = new Date(Date.now() - 10000)
+
+    const credentialKind = inputSplit[0]
+    const directives = (inputSplit[1] || '').split(',')
+
+    instance[credentialKind] = input
+
+    for (let i = 0; i < directives.length; i++) {
+      switch (directives[i]) {
+        case 'about-to-lock':
+          instance.failedLogInAttempts = 2
+          break
+
+        case 'nothing':
+          return
+
+        case 'confirmed':
+          instance[`${credentialKind}ConfirmedAt`] = new Date()
+          break
+
+        case 'locked':
+          instance.failedLogInAttempts = 3
+          instance.lockedAt = new Date()
+          break
+
+        case 'multi-factor-enabled':
+          instance.multiFactorEnabled = true
+          break
+
+        case 'multi-factor-active':
+          instance.multiFactorActiveAt = new Date(Date.now() - 10000)
+          break
+
+        case 'multi-factor-active-confirmed':
+          instance[`${credentialKind}ConfirmedAt`] = new Date()
+          instance.multiFactorActiveAt = new Date(Date.now() - 10000)
+          break
+
+        case 'multi-factor-active-unconfirmed':
+          instance[`${credentialKind}ConfirmedAt`] = null
+          instance.multiFactorActiveAt = new Date(Date.now() - 10000)
+          break
+
+        case 'multi-factor-inactive':
+          instance.multiFactorActiveAt = null
+          break
+
+        case 'no-password':
+          instance.encryptedPassword = null
+          break
+
+        case 'ready-to-unlock':
+          instance.failedLogInAttempts = 5
+          instance.lockedAt = new Date(Date.now() - 10000)
+          break
+
+        case 'unconfirmed':
+          instance[`${credentialKind}ConfirmedAt`] = null
+          break
+
+        case 'universal-connected':
+          instance['universalId'] = 80085
+          break
+      }
+    }
+
+    return instance
+  }
 }

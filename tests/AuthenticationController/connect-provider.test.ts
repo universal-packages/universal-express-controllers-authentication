@@ -45,7 +45,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 123 } })
+        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 'any.nothing' } })
       })
     })
 
@@ -76,7 +76,7 @@ describe('AuthenticationController', (): void => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 80085)
+          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 'any.universal-connected')
           next()
         })
         await app.prepare()

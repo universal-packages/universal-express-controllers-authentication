@@ -70,13 +70,13 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/log-in`, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email-unconfirmed', password: 'password' })
+          body: JSON.stringify({ credential: 'email.unconfirmed', password: 'password' })
         })
         expect(response.status).toEqual(202)
         expect(await response.json()).toEqual({
           message: 'confirmation-required',
           metadata: {
-            credential: 'email-unconfirmed',
+            credential: 'email.unconfirmed',
             credentialKind: 'email'
           }
         })

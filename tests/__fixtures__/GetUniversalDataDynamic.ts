@@ -16,7 +16,7 @@ export default class GetUniversalUserDataDynamic {
       case 'exists':
         return {
           attributes: {
-            id: 80085,
+            id: 'any',
             username: 'david-universal',
             email: 'user@universal.com',
             firstName: 'david',
@@ -28,7 +28,7 @@ export default class GetUniversalUserDataDynamic {
       default:
         return {
           attributes: {
-            id: 123,
+            id: 'any.nothing',
             username: 'david-universal',
             email: 'user@universal.com',
             firstName: 'david',
