@@ -18,53 +18,35 @@ beforeAll(async (): Promise<void> => {
 })
 
 describe('AuthenticationController', (): void => {
-  describe('request-multi-factor', (): void => {
-    describe('when the multi-factor request is successful', (): void => {
+  describe('request-password-reset', (): void => {
+    describe('when the password-reset request is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email.multi-factor-active', credentialKind: 'email' })
+          body: JSON.stringify({ credential: 'email', credentialKind: 'email' })
         })
 
         expect(response.status).toEqual(200)
       })
     })
 
-    describe('when the multi-factor request fails (identifier invalid)', (): void => {
+    describe('when no authenticatable can be match with the credential', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email.nothing', credentialKind: 'email' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'nothing-to-do' })
-      })
-    })
-
-    describe('when the authenticatable is not active for multi factor', (): void => {
-      it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
-
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email', credentialKind: 'email' })
+          body: JSON.stringify({ credential: 'email.nothing', credentialKind: 'email' })
         })
 
         expect(response.status).toEqual(202)
@@ -83,10 +65,10 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email', credentialKind: 'id' })
+          body: JSON.stringify({ credential: 'email', credentialKind: 'id' })
         })
 
         expect(response.status).toEqual(400)

@@ -10,6 +10,7 @@ export type RouteName =
   | 'requestConfirmation'
   | 'requestCorroboration'
   | 'requestMultiFactor'
+  | 'requestPasswordReset'
   | 'signUp'
   | 'verifyUnlock'
 

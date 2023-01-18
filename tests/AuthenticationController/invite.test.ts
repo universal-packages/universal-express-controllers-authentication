@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from 'express'
 import fetch from 'node-fetch'
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/express-controllers-authentication'
-import GetUniversalUserDataDynamic from '../__fixtures__/GetUniversalDataDynamic'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 const port = 4000 + Number(process.env['JEST_WORKER_ID'])
@@ -15,14 +14,6 @@ afterEach(async (): Promise<void> => {
 
 beforeAll(async (): Promise<void> => {
   await initialize({ debug: true, dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
-
-  CURRENT_AUTHENTICATION.instance.dynamics['get-universal-user-data'] = {
-    afterHooks: [],
-    beforeHooks: [],
-    implementations: [],
-    name: 'get-universal-user-data',
-    default: GetUniversalUserDataDynamic
-  }
 })
 
 describe('AuthenticationController', (): void => {
