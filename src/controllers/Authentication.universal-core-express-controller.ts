@@ -139,39 +139,6 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('POST', 'signUp')
-  public async signUp(): Promise<any> {
-    try {
-      const parameters = CURRENT_AUTHENTICATION.instance.performDynamicSync('shape-sign-up-parameters', { parameters: this.request.parameters })
-      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('sign-up', parameters)
-
-      switch (result.status) {
-        case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
-          break
-        case 'warning':
-          this.status('ACCEPTED').json({ message: result.message, metadata: result.metadata })
-          break
-        case 'success':
-          const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
-            request: this.request,
-            response: this.response,
-            authenticatable: result.authenticatable
-          })
-
-          const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', {
-            authenticatable: result.authenticatable,
-            sessionToken
-          })
-
-          this.json(rendered)
-          break
-      }
-    } catch (error) {
-      this.status('BAD_REQUEST').json({ parameters: error.message })
-    }
-  }
-
   @RegisterAction('PUT', 'requestConfirmation')
   public async requestConfirmation(): Promise<any> {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
@@ -241,6 +208,66 @@ export default class AuthenticationController extends BaseController {
       }
     } catch (error) {
       this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
+
+  @RegisterAction('POST', 'signUp')
+  public async signUp(): Promise<any> {
+    try {
+      const parameters = CURRENT_AUTHENTICATION.instance.performDynamicSync('shape-sign-up-parameters', { parameters: this.request.parameters })
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('sign-up', parameters)
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
+          break
+        case 'warning':
+          this.status('ACCEPTED').json({ message: result.message, metadata: result.metadata })
+          break
+        case 'success':
+          const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
+            request: this.request,
+            response: this.response,
+            authenticatable: result.authenticatable
+          })
+
+          const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', {
+            authenticatable: result.authenticatable,
+            sessionToken
+          })
+
+          this.json(rendered)
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
+
+  @RegisterAction('PATCH', 'updateAuthenticatable')
+  public async updateAuthenticatable(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      try {
+        const parameters = CURRENT_AUTHENTICATION.instance.performDynamicSync('shape-update-authenticatable-parameters', { parameters: this.request.parameters })
+        const result = await CURRENT_AUTHENTICATION.instance.performDynamic('update-authenticatable', { authenticatable, ...parameters })
+
+        switch (result.status) {
+          case 'failure':
+            this.status('BAD_REQUEST').json({ validation: result.validation })
+            break
+          case 'success':
+            const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
+
+            this.json(rendered)
+            break
+        }
+      } catch (error) {
+        this.status('BAD_REQUEST').json({ parameters: error.message })
+      }
+    } else {
+      this.status('UNAUTHORIZED')
     }
   }
 }

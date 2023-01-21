@@ -1,9 +1,9 @@
-import { AuthDynamic } from '@universal-packages/authentication'
+import { AuthDynamic, SignUpPayload } from '@universal-packages/authentication'
 import { AuthDynamicNames, ShapeSignUpParametersPayload } from '../types'
 
 @AuthDynamic<AuthDynamicNames>('shape-sign-up-parameters', true)
 export default class ShapeSignUpParametersDynamic {
-  public perform(payload: ShapeSignUpParametersPayload): Record<string, any> {
+  public perform(payload: ShapeSignUpParametersPayload): SignUpPayload {
     const { parameters } = payload
 
     return parameters.shape({

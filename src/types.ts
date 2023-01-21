@@ -1,4 +1,4 @@
-import { AuthDynamicNames as AN, Authenticatable, Authentication, AuthenticationOptions, SignUpPayload } from '@universal-packages/authentication'
+import { AuthDynamicNames as AN, Authenticatable, Authentication, AuthenticationOptions, SignUpPayload, UpdateAuthenticatablePayload } from '@universal-packages/authentication'
 import { Parameters } from '@universal-packages/parameters'
 import { Request, Response } from 'express'
 
@@ -12,6 +12,7 @@ export type RouteName =
   | 'requestMultiFactor'
   | 'requestPasswordReset'
   | 'signUp'
+  | 'updateAuthenticatable'
   | 'verifyUnlock'
 
 export interface ExpressControllerAuthenticationOptions extends AuthenticationOptions {
@@ -38,6 +39,7 @@ export interface AuthDynamicNames extends AN {
   'render-authentication-response': { payload: RenderAuthenticationResponsePayload; result: Record<string, any> }
   'set-session': { payload: SetSessionPayload; result: string }
   'shape-sign-up-parameters': { payload: ShapeSignUpParametersPayload; result: SignUpPayload }
+  'shape-update-authenticatable-parameters': { payload: ShapeUpdateAuthenticatableParametersPayload; result: UpdateAuthenticatablePayload }
 }
 
 export interface AuthenticatableFromRequestPayload {
@@ -56,5 +58,9 @@ export interface SetSessionPayload {
 }
 
 export interface ShapeSignUpParametersPayload {
+  parameters: Parameters
+}
+
+export interface ShapeUpdateAuthenticatableParametersPayload {
   parameters: Parameters
 }

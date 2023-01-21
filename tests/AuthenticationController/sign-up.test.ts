@@ -126,7 +126,7 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/sign-up`, {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({})
+          body: JSON.stringify({ attributes: {} })
         })
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({ parameters: 'request/credentialKind was not provided and is not optional' })
