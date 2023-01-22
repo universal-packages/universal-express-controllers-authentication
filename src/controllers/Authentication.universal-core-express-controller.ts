@@ -5,7 +5,8 @@ import {
   LogInPayload,
   RequestCorroborationPayload,
   RequestMultiFactorPayload,
-  RequestPasswordResetPayload
+  RequestPasswordResetPayload,
+  UpdateCredentialPayload
 } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
@@ -256,6 +257,36 @@ export default class AuthenticationController extends BaseController {
         switch (result.status) {
           case 'failure':
             this.status('BAD_REQUEST').json({ validation: result.validation })
+            break
+          case 'success':
+            const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
+
+            this.json(rendered)
+            break
+        }
+      } catch (error) {
+        this.status('BAD_REQUEST').json({ parameters: error.message })
+      }
+    } else {
+      this.status('UNAUTHORIZED')
+    }
+  }
+
+  @RegisterAction('PATCH', 'updateCredential')
+  public async updateCredential(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      try {
+        const parameters = this.request.parameters.shape<UpdateCredentialPayload>('credential', {
+          credentialKind: { enum: new Set(['email', 'phone']) },
+          corroborationToken: { optional: true }
+        })
+        const result = await CURRENT_AUTHENTICATION.instance.performDynamic('update-credential', { authenticatable, ...parameters })
+
+        switch (result.status) {
+          case 'failure':
+            this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
             break
           case 'success':
             const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })

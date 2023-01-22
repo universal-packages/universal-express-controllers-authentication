@@ -17,6 +17,7 @@ export async function initialize(options: ExpressControllerAuthenticationOptions
       requestMultiFactor: { enable: true, path: 'request-multi-factor', ...routesOptions.requestMultiFactor },
       requestPasswordReset: { enable: true, path: 'request-password-reset', ...routesOptions.requestPasswordReset },
       updateAuthenticatable: { enable: true, path: 'update-authenticatable', ...routesOptions.updateAuthenticatable },
+      updateCredential: { enable: true, path: 'update-credential', ...routesOptions.updateCredential },
       signUp: { enable: true, path: 'sign-up', ...routesOptions.signUp },
       verifyUnlock: { enable: true, path: 'verify-unlock', ...routesOptions.verifyUnlock }
     }

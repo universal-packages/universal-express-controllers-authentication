@@ -21,11 +21,11 @@ describe('AuthenticationController', (): void => {
   describe('request-corroboration', (): void => {
     describe('when the corroboration request is successful', (): void => {
       beforeAll((): void => {
-        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpCorroboration = true
+        CURRENT_AUTHENTICATION.instance.options.email.enableCorroboration = true
       })
 
       afterAll((): void => {
-        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpCorroboration = false
+        CURRENT_AUTHENTICATION.instance.options.email.enableCorroboration = false
       })
 
       it('returns ok', async (): Promise<void> => {

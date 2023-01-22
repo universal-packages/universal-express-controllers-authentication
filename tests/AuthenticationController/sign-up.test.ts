@@ -46,11 +46,11 @@ describe('AuthenticationController', (): void => {
 
     describe('when the sign up is lacking a requirement like the corroboration token', (): void => {
       beforeAll((): void => {
-        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpCorroboration = true
+        CURRENT_AUTHENTICATION.instance.options.email.enableCorroboration = true
       })
 
       afterAll((): void => {
-        CURRENT_AUTHENTICATION.instance.options.email.enableSignUpCorroboration = false
+        CURRENT_AUTHENTICATION.instance.options.email.enableCorroboration = false
       })
 
       it('returns bad request and message', async (): Promise<void> => {

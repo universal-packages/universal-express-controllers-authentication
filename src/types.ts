@@ -13,6 +13,7 @@ export type RouteName =
   | 'requestPasswordReset'
   | 'signUp'
   | 'updateAuthenticatable'
+  | 'updateCredential'
   | 'verifyUnlock'
 
 export interface ExpressControllerAuthenticationOptions extends AuthenticationOptions {
