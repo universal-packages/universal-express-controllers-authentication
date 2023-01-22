@@ -16,8 +16,8 @@ beforeAll(async (): Promise<void> => {
 })
 
 describe('AuthenticationController', (): void => {
-  describe('verify-corroboration', (): void => {
-    describe('when the corroboration verification is successful', (): void => {
+  describe('verify-multi-factor', (): void => {
+    describe('when the multi-factor verification is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
@@ -25,17 +25,18 @@ describe('AuthenticationController', (): void => {
         await app.run()
 
         const oneTimePassword = CURRENT_AUTHENTICATION.instance.performDynamicSync('generate-one-time-password', {
-          concern: 'corroboration',
-          identifier: 'email.confirmed.email'
+          concern: 'multi-factor',
+          identifier: 'email.multi-factor-active'
         })
 
-        let response = await fetch(`http://localhost:${port}/authentication/verify-corroboration`, {
+        let response = await fetch(`http://localhost:${port}/authentication/verify-multi-factor`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.confirmed', credentialKind: 'email', oneTimePassword })
+          body: JSON.stringify({ identifier: 'email.multi-factor-active', oneTimePassword })
         })
 
         expect(response.status).toEqual(200)
+        expect(await response.json()).toMatchObject({ authenticatable: {}, sessionToken: '' })
       })
     })
 
@@ -46,10 +47,10 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/verify-corroboration`, {
+        let response = await fetch(`http://localhost:${port}/authentication/verify-multi-factor`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.confirmed', credentialKind: 'email', oneTimePassword: 'nop' })
+          body: JSON.stringify({ identifier: 'email.multi-factor-active', oneTimePassword: 'nop' })
         })
 
         expect(response.status).toEqual(400)
@@ -64,7 +65,7 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/verify-corroboration`, {
+        let response = await fetch(`http://localhost:${port}/authentication/verify-multi-factor`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({})
@@ -72,7 +73,7 @@ describe('AuthenticationController', (): void => {
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/credential was not provided and is not optional'
+          parameters: 'request/identifier was not provided and is not optional'
         })
       })
     })

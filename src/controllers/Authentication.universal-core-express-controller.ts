@@ -8,7 +8,9 @@ import {
   RequestMultiFactorPayload,
   RequestPasswordResetPayload,
   UpdateCredentialPayload,
-  VerifyConfirmationPayload
+  VerifyConfirmationPayload,
+  VerifyCorroborationPayload,
+  VerifyMultiFactorPayload
 } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
@@ -323,12 +325,42 @@ export default class AuthenticationController extends BaseController {
   @RegisterAction('PUT', 'verifyCorroboration')
   public async verifyCorroboration(): Promise<any> {
     try {
-      const parameters = this.request.parameters.shape<VerifyConfirmationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
+      const parameters = this.request.parameters.shape<VerifyCorroborationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
       const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-corroboration', parameters)
 
       switch (result.status) {
         case 'failure':
           this.status('BAD_REQUEST').json({ message: result.message })
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
+
+  @RegisterAction('PUT', 'verifyMultiFactor')
+  public async verifyMultiFactor(): Promise<any> {
+    try {
+      const parameters = this.request.parameters.shape<VerifyMultiFactorPayload>('identifier', 'oneTimePassword')
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-multi-factor', parameters)
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message })
+          break
+        case 'success':
+          const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
+            request: this.request,
+            response: this.response,
+            authenticatable: result.authenticatable
+          })
+
+          const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', {
+            authenticatable: result.authenticatable,
+            sessionToken
+          })
+
+          this.json(rendered)
           break
       }
     } catch (error) {
