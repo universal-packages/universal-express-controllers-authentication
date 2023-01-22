@@ -22,6 +22,7 @@ export async function initialize(options: ExpressControllerAuthenticationOptions
       verifyConfirmation: { enable: true, path: 'verify-confirmation', ...routesOptions.verifyConfirmation },
       verifyCorroboration: { enable: true, path: 'verify-corroboration', ...routesOptions.verifyCorroboration },
       verifyMultiFactor: { enable: true, path: 'verify-multi-factor', ...routesOptions.verifyMultiFactor },
+      verifyPasswordReset: { enable: true, path: 'verify-password-reset', ...routesOptions.verifyPasswordReset },
       verifyUnlock: { enable: true, path: 'verify-unlock', ...routesOptions.verifyUnlock }
     }
 

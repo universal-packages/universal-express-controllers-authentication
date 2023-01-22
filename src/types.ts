@@ -17,6 +17,7 @@ export type RouteName =
   | 'verifyConfirmation'
   | 'verifyCorroboration'
   | 'verifyMultiFactor'
+  | 'verifyPasswordReset'
   | 'verifyUnlock'
 
 export interface ExpressControllerAuthenticationOptions extends AuthenticationOptions {

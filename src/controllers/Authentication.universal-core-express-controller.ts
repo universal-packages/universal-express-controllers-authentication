@@ -10,7 +10,8 @@ import {
   UpdateCredentialPayload,
   VerifyConfirmationPayload,
   VerifyCorroborationPayload,
-  VerifyMultiFactorPayload
+  VerifyMultiFactorPayload,
+  VerifyPasswordResetPayload
 } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
@@ -361,6 +362,22 @@ export default class AuthenticationController extends BaseController {
           })
 
           this.json(rendered)
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
+
+  @RegisterAction('PUT', 'verifyPasswordReset')
+  public async verifyPasswordReset(): Promise<any> {
+    try {
+      const parameters = this.request.parameters.shape<VerifyPasswordResetPayload>('identifier', 'oneTimePassword', 'password')
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-password-reset', parameters)
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
           break
       }
     } catch (error) {
