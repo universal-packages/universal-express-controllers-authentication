@@ -3,10 +3,12 @@ import {
   ContinueWithProviderPayload,
   InviteAuthenticatablePayload,
   LogInPayload,
+  RequestConfirmationPayload,
   RequestCorroborationPayload,
   RequestMultiFactorPayload,
   RequestPasswordResetPayload,
-  UpdateCredentialPayload
+  UpdateCredentialPayload,
+  VerifyConfirmationPayload
 } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
@@ -145,7 +147,7 @@ export default class AuthenticationController extends BaseController {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
     try {
-      const parameters = this.request.parameters.shape<InviteAuthenticatablePayload>({ credential: { optional: true }, credentialKind: { enum: new Set(['email', 'phone']) } })
+      const parameters = this.request.parameters.shape<RequestConfirmationPayload>({ credential: { optional: true }, credentialKind: { enum: new Set(['email', 'phone']) } })
       const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-confirmation', { authenticatable, ...parameters })
 
       switch (result.status) {
@@ -299,6 +301,22 @@ export default class AuthenticationController extends BaseController {
       }
     } else {
       this.status('UNAUTHORIZED')
+    }
+  }
+
+  @RegisterAction('PUT', 'verifyConfirmation')
+  public async verifyConfirmation(): Promise<any> {
+    try {
+      const parameters = this.request.parameters.shape<VerifyConfirmationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-confirmation', parameters)
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message })
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
     }
   }
 }
