@@ -319,4 +319,20 @@ export default class AuthenticationController extends BaseController {
       this.status('BAD_REQUEST').json({ parameters: error.message })
     }
   }
+
+  @RegisterAction('PUT', 'verifyCorroboration')
+  public async verifyCorroboration(): Promise<any> {
+    try {
+      const parameters = this.request.parameters.shape<VerifyConfirmationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-corroboration', parameters)
+
+      switch (result.status) {
+        case 'failure':
+          this.status('BAD_REQUEST').json({ message: result.message })
+          break
+      }
+    } catch (error) {
+      this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+  }
 }

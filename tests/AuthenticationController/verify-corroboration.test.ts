@@ -1,7 +1,7 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
-import { NextFunction, Request, Response } from 'express'
 import fetch from 'node-fetch'
 import { initialize } from '../../src'
+import { CURRENT_AUTHENTICATION } from '../../src/express-controllers-authentication'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 const port = 4000 + Number(process.env['JEST_WORKER_ID'])
@@ -16,39 +16,44 @@ beforeAll(async (): Promise<void> => {
 })
 
 describe('AuthenticationController', (): void => {
-  describe('request-password-reset', (): void => {
-    describe('when the password-reset request is successful', (): void => {
+  describe('verify-corroboration', (): void => {
+    describe('when the corroboration verification is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
+        const oneTimePassword = CURRENT_AUTHENTICATION.instance.performDynamicSync('generate-one-time-password', {
+          concern: 'corroboration',
+          identifier: 'email.unconfirmed.email'
+        })
+
+        let response = await fetch(`http://localhost:${port}/authentication/verify-corroboration`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email', credentialKind: 'email' })
+          body: JSON.stringify({ credential: 'email.unconfirmed', credentialKind: 'email', oneTimePassword })
         })
 
         expect(response.status).toEqual(200)
       })
     })
 
-    describe('when no authenticatable can be match with the credential', (): void => {
+    describe('when the verification fails', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
+        let response = await fetch(`http://localhost:${port}/authentication/verify-corroboration`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.nothing', credentialKind: 'email' })
+          body: JSON.stringify({ credential: 'email.unconfirmed', credentialKind: 'email', oneTimePassword: 'nop' })
         })
 
-        expect(response.status).toEqual(202)
-        expect(await response.json()).toMatchObject({ message: 'nothing-to-do' })
+        expect(response.status).toEqual(400)
+        expect(await response.json()).toMatchObject({ message: 'invalid-one-time-password' })
       })
     })
 
@@ -56,22 +61,18 @@ describe('AuthenticationController', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-unconfirmed')
-          next()
-        })
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
+        let response = await fetch(`http://localhost:${port}/authentication/verify-corroboration`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email', credentialKind: 'id' })
+          body: JSON.stringify({})
         })
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "id" was given'
+          parameters: 'request/credential was not provided and is not optional'
         })
       })
     })

@@ -15,6 +15,7 @@ export type RouteName =
   | 'updateAuthenticatable'
   | 'updateCredential'
   | 'verifyConfirmation'
+  | 'verifyCorroboration'
   | 'verifyUnlock'
 
 export interface ExpressControllerAuthenticationOptions extends AuthenticationOptions {

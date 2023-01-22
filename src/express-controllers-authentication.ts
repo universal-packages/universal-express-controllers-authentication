@@ -20,6 +20,7 @@ export async function initialize(options: ExpressControllerAuthenticationOptions
       updateCredential: { enable: true, path: 'update-credential', ...routesOptions.updateCredential },
       signUp: { enable: true, path: 'sign-up', ...routesOptions.signUp },
       verifyConfirmation: { enable: true, path: 'verify-confirmation', ...routesOptions.verifyConfirmation },
+      verifyCorroboration: { enable: true, path: 'verify-corroboration', ...routesOptions.verifyCorroboration },
       verifyUnlock: { enable: true, path: 'verify-unlock', ...routesOptions.verifyUnlock }
     }
 
