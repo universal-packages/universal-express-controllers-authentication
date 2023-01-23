@@ -1,7 +1,7 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import fetch from 'node-fetch'
 import { initialize } from '../../src'
-import { CURRENT_AUTHENTICATION } from '../../src/express-controllers-authentication'
+import { CURRENT_AUTHENTICATION } from '../../src/initialize'
 import GetUniversalUserDataDynamic from '../__fixtures__/GetUniversalDataDynamic'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 

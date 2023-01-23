@@ -16,11 +16,11 @@ import {
 } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 import { RegisterAction, RegisterController } from '../decorators'
-import { CURRENT_AUTHENTICATION } from '../express-controllers-authentication'
+import { CURRENT_AUTHENTICATION } from '../initialize'
 
 @RegisterController()
 export default class AuthenticationController extends BaseController {
-  @RegisterAction('PATCH', 'connectProvider')
+  @RegisterAction('connectProvider')
   public async connectProvider(): Promise<any> {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
@@ -55,7 +55,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('POST', 'continueWithProvider')
+  @RegisterAction('continueWithProvider')
   public async continueWithProvider(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<ContinueWithProviderPayload>('provider', 'token')
@@ -90,7 +90,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'invite')
+  @RegisterAction('invite')
   public async invite(): Promise<any> {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
@@ -112,7 +112,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('POST', 'logIn')
+  @RegisterAction('logIn')
   public async logIn(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<LogInPayload>('credential', 'password')
@@ -146,7 +146,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'requestConfirmation')
+  @RegisterAction('requestConfirmation')
   public async requestConfirmation(): Promise<any> {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
@@ -167,7 +167,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'requestCorroboration')
+  @RegisterAction('requestCorroboration')
   public async requestCorroboration(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<RequestCorroborationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
@@ -183,7 +183,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'requestMultiFactor')
+  @RegisterAction('requestMultiFactor')
   public async requestMultiFactor(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<RequestMultiFactorPayload>('identifier', { credentialKind: { enum: new Set(['email', 'phone']) } })
@@ -202,7 +202,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'requestPasswordReset')
+  @RegisterAction('requestPasswordReset')
   public async requestPasswordReset(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<RequestPasswordResetPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
@@ -218,7 +218,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('POST', 'signUp')
+  @RegisterAction('signUp')
   public async signUp(): Promise<any> {
     try {
       const parameters = CURRENT_AUTHENTICATION.instance.performDynamicSync('shape-sign-up-parameters', { parameters: this.request.parameters })
@@ -251,7 +251,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PATCH', 'updateAuthenticatable')
+  @RegisterAction('updateAuthenticatable')
   public async updateAuthenticatable(): Promise<any> {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
@@ -278,7 +278,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PATCH', 'updateCredential')
+  @RegisterAction('updateCredential')
   public async updateCredential(): Promise<any> {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
@@ -308,7 +308,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'verifyConfirmation')
+  @RegisterAction('verifyConfirmation')
   public async verifyConfirmation(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<VerifyConfirmationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
@@ -324,7 +324,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'verifyCorroboration')
+  @RegisterAction('verifyCorroboration')
   public async verifyCorroboration(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<VerifyCorroborationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
@@ -340,7 +340,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'verifyMultiFactor')
+  @RegisterAction('verifyMultiFactor')
   public async verifyMultiFactor(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<VerifyMultiFactorPayload>('identifier', 'oneTimePassword')
@@ -370,7 +370,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'verifyPasswordReset')
+  @RegisterAction('verifyPasswordReset')
   public async verifyPasswordReset(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<VerifyPasswordResetPayload>('identifier', 'oneTimePassword', 'password')
@@ -386,7 +386,7 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
-  @RegisterAction('PUT', 'verifyUnlock')
+  @RegisterAction('verifyUnlock')
   public async verifyUnlock(): Promise<any> {
     try {
       const parameters = this.request.parameters.shape<VerifyUnlockPayload>('identifier', 'oneTimePassword')

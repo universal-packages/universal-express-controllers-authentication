@@ -1,4 +1,5 @@
 import { AuthDynamicNames as AN, Authenticatable, Authentication, AuthenticationOptions, SignUpPayload, UpdateAuthenticatablePayload } from '@universal-packages/authentication'
+import { HTTPVerb } from '@universal-packages/express-controllers'
 import { Parameters } from '@universal-packages/parameters'
 import { Request, Response } from 'express'
 
@@ -31,6 +32,7 @@ export type AuthenticationRoutes = {
 
 export interface AuthenticationRoute {
   enable?: boolean
+  method?: HTTPVerb
   path?: string
 }
 

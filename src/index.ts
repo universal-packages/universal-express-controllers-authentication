@@ -1,2 +1,2 @@
-export { initialize } from './express-controllers-authentication'
+export { initialize } from './initialize'
 export * from './types'

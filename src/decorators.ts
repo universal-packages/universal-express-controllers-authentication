@@ -1,14 +1,14 @@
 import { Action, Controller, HTTPVerb } from '@universal-packages/express-controllers'
 import { ClassDecoratorFunction, MethodDecoratorFunction } from '@universal-packages/namespaced-decorators'
-import { CURRENT_AUTHENTICATION } from './express-controllers-authentication'
+import { CURRENT_AUTHENTICATION } from './initialize'
 import { RouteName } from './types'
 
-export function RegisterAction(method: HTTPVerb, route: RouteName): MethodDecoratorFunction {
+export function RegisterAction(route: RouteName): MethodDecoratorFunction {
   if (CURRENT_AUTHENTICATION.instance) {
     const routeConf = CURRENT_AUTHENTICATION.options.routes[route]
 
     if (routeConf.enable) {
-      return Action(method, routeConf.path)
+      return Action(routeConf.method, routeConf.path)
     }
   }
 
