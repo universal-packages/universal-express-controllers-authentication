@@ -30,8 +30,8 @@ export type AuthenticationRoutes = {
 }
 
 export interface AuthenticationRoute {
-  enable: boolean
-  path: string
+  enable?: boolean
+  path?: string
 }
 
 export interface CurrentAuthentication {
