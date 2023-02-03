@@ -16,11 +16,8 @@ npm install @universal-packages/express-controllers
 npm install express
 ```
 
-## initialize
-
-**`initialize`**(**`options`**: ExpressControllerAuthenticationOptions, [**`authenticatableClass`**: AuthenticatableClass])
-
----
+## Global methods
+#### **`initialize(options: Object, [authenticatableClass: AuthenticatableClass])`**
 
 Initialize the authentication api and the authentication controller to prepare routing configuration before the `ExpressApp` runs. The authentication controller is loaded automatically by `ExpressApp`.
 
@@ -38,7 +35,7 @@ await app.run()
 
 Now all authentication actions are available to access on path `authentication/<action>`
 
-## Options
+#### Options
 
 `initialize` takes the same [options](https://github.com/universal-packages/universal-authentication#options) as `Authentication`.
 
