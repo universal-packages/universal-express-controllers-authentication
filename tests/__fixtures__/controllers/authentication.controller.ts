@@ -1,1 +1,1 @@
-export { default } from '../../../src/controllers/Authentication.universal-core-express-controller'
+export { default } from '../../../src/controllers/Authentication.universal-express-controller'
