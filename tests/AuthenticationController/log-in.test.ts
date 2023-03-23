@@ -74,6 +74,7 @@ describe('AuthenticationController', (): void => {
         })
         expect(response.status).toEqual(202)
         expect(await response.json()).toEqual({
+          status: 'warning',
           message: 'confirmation-required',
           metadata: {
             credential: 'email.unconfirmed',

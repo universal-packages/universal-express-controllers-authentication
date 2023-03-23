@@ -33,10 +33,10 @@ export default class AuthenticationController extends BaseController {
 
           switch (result.status) {
             case 'failure':
-              this.status('BAD_REQUEST').json({ message: result.message })
+              this.status('BAD_REQUEST').json(result)
               break
             case 'warning':
-              this.status('ACCEPTED').json({ message: result.message })
+              this.status('ACCEPTED').json(result)
               break
             case 'success':
               const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
@@ -65,7 +65,7 @@ export default class AuthenticationController extends BaseController {
 
         switch (result.status) {
           case 'failure':
-            this.status('BAD_REQUEST').json({ message: result.message })
+            this.status('BAD_REQUEST').json(result)
             break
           case 'success':
             const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
@@ -101,7 +101,7 @@ export default class AuthenticationController extends BaseController {
 
         switch (result.status) {
           case 'failure':
-            this.status('BAD_REQUEST').json({ message: result.message })
+            this.status('BAD_REQUEST').json(result)
             break
         }
       } catch (error) {
@@ -121,10 +121,10 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message })
+          this.status('BAD_REQUEST').json(result)
           break
         case 'warning':
-          this.status('ACCEPTED').json({ message: result.message, metadata: result.metadata })
+          this.status('ACCEPTED').json(result)
           break
         case 'success':
           const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
@@ -156,10 +156,10 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message })
+          this.status('BAD_REQUEST').json(result)
           break
         case 'warning':
-          this.status('ACCEPTED').json({ message: result.message })
+          this.status('ACCEPTED').json(result)
           break
       }
     } catch (error) {
@@ -175,7 +175,7 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message })
+          this.status('BAD_REQUEST').json(result)
           break
       }
     } catch (error) {
@@ -191,10 +191,10 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message })
+          this.status('BAD_REQUEST').json(result)
           break
         case 'warning':
-          this.status('ACCEPTED').json({ message: result.message })
+          this.status('ACCEPTED').json(result)
           break
       }
     } catch (error) {
@@ -210,7 +210,7 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'warning':
-          this.status('ACCEPTED').json({ message: result.message })
+          this.status('ACCEPTED').json(result)
           break
       }
     } catch (error) {
@@ -226,10 +226,10 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
+          this.status('BAD_REQUEST').json(result)
           break
         case 'warning':
-          this.status('ACCEPTED').json({ message: result.message, metadata: result.metadata })
+          this.status('ACCEPTED').json(result)
           break
         case 'success':
           const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
@@ -262,7 +262,7 @@ export default class AuthenticationController extends BaseController {
 
         switch (result.status) {
           case 'failure':
-            this.status('BAD_REQUEST').json({ validation: result.validation })
+            this.status('BAD_REQUEST').json(result)
             break
           case 'success':
             const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
@@ -292,7 +292,7 @@ export default class AuthenticationController extends BaseController {
 
         switch (result.status) {
           case 'failure':
-            this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
+            this.status('BAD_REQUEST').json(result)
             break
           case 'success':
             const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
@@ -316,7 +316,7 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message })
+          this.status('BAD_REQUEST').json(result)
           break
       }
     } catch (error) {
@@ -332,7 +332,7 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message })
+          this.status('BAD_REQUEST').json(result)
           break
       }
     } catch (error) {
@@ -348,7 +348,7 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message })
+          this.status('BAD_REQUEST').json(result)
           break
         case 'success':
           const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
@@ -378,7 +378,7 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
+          this.status('BAD_REQUEST').json(result)
           break
       }
     } catch (error) {
@@ -394,7 +394,7 @@ export default class AuthenticationController extends BaseController {
 
       switch (result.status) {
         case 'failure':
-          this.status('BAD_REQUEST').json({ message: result.message, validation: result.validation })
+          this.status('BAD_REQUEST').json(result)
           break
       }
     } catch (error) {
