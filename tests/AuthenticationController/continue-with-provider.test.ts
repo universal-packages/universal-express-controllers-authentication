@@ -76,7 +76,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ provider: 'unknown' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'unknown-provider' })
       })
     })
 
