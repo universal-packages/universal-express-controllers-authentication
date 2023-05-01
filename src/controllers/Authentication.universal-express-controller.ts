@@ -45,7 +45,7 @@ export default class AuthenticationController extends BaseController {
           this.status('ACCEPTED').json(result)
           break
         case 'success':
-          const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
+          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
 
           this.json(rendered)
           break
@@ -78,7 +78,7 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', {
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
           authenticatable: result.authenticatable,
           sessionToken
         })
@@ -139,7 +139,7 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', {
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
           authenticatable: result.authenticatable,
           sessionToken
         })
@@ -260,7 +260,7 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', {
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
           authenticatable: result.authenticatable,
           sessionToken
         })
@@ -290,7 +290,7 @@ export default class AuthenticationController extends BaseController {
           this.status('BAD_REQUEST').json(result)
           break
         case 'success':
-          const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
+          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
 
           this.json(rendered)
           break
@@ -323,7 +323,7 @@ export default class AuthenticationController extends BaseController {
           this.status('BAD_REQUEST').json(result)
           break
         case 'success':
-          const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', { authenticatable: result.authenticatable })
+          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
 
           this.json(rendered)
           break
@@ -394,7 +394,7 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = CURRENT_AUTHENTICATION.instance.performDynamicSync('render-authentication-response', {
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
           authenticatable: result.authenticatable,
           sessionToken
         })
