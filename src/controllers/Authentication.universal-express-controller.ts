@@ -346,6 +346,11 @@ export default class AuthenticationController extends BaseController {
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-confirmation', parameters)
 
     switch (result.status) {
+      case 'success':
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
+
+        this.json(rendered)
+        break
       case 'failure':
         this.status('BAD_REQUEST').json(result)
         break

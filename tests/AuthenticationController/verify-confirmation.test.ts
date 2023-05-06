@@ -36,6 +36,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
+        expect(await response.json()).toMatchObject({ authenticatable: {} })
       })
     })
 
