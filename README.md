@@ -72,6 +72,20 @@ Additionally takes the following ones:
       Enables the customization of the route for this action
     - **`method`** `HTTPVerb` `default: POST`
       Lets customize the method to access this action
+  - **`logOut`**
+    - **`enable`** `Boolean` `default: true`
+      Enables the controller to expose this action
+    - **`path`** `String` `default: log-in`
+      Enables the customization of the route for this action
+    - **`method`** `HTTPVerb` `default: POST`
+      Lets customize the method to access this action
+  - **`me`**
+    - **`enable`** `Boolean` `default: true`
+      Enables the controller to expose this action
+    - **`path`** `String` `default: log-in`
+      Enables the customization of the route for this action
+    - **`method`** `HTTPVerb` `default: POST`
+      Lets customize the method to access this action
   - **`requestConfirmation`**
     - **`enable`** `Boolean` `default: true`
       Enables the controller to expose this action
@@ -99,6 +113,13 @@ Additionally takes the following ones:
     - **`path`** `String` `default: request-password-reset`
       Enables the customization of the route for this action
     - **`method`** `HTTPVerb` `default: PUT`
+      Lets customize the method to access this action
+  - **`sessions`**
+    - **`enable`** `Boolean` `default: true`
+      Enables the controller to expose this action
+    - **`path`** `String` `default: log-in`
+      Enables the customization of the route for this action
+    - **`method`** `HTTPVerb` `default: POST`
       Lets customize the method to access this action
   - **`signUp`**
     - **`enable`** `Boolean` `default: true`

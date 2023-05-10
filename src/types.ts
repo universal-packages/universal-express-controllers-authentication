@@ -8,10 +8,13 @@ export type RouteName =
   | 'continueWithProvider'
   | 'invite'
   | 'logIn'
+  | 'logOut'
+  | 'me'
   | 'requestConfirmation'
   | 'requestCorroboration'
   | 'requestMultiFactor'
   | 'requestPasswordReset'
+  | 'sessions'
   | 'signUp'
   | 'updateAuthenticatable'
   | 'updateCredential'
@@ -44,9 +47,11 @@ export interface CurrentAuthentication {
 export interface AuthDynamicNames extends AN {
   'authenticatable-from-request': { payload: AuthenticatableFromRequestPayload; result: Authenticatable }
   'render-authentication-response': { payload: RenderAuthenticationResponsePayload; result: Record<string, any> }
+  'render-sessions-response': { payload: RenderSessionsResponsePayload; result: Record<string, any> }
   'set-session': { payload: SetSessionPayload; result: string }
   'shape-sign-up-parameters': { payload: ShapeSignUpParametersPayload; result: SignUpPayload }
   'shape-update-authenticatable-parameters': { payload: ShapeUpdateAuthenticatableParametersPayload; result: UpdateAuthenticatablePayload }
+  'unset-session': { payload: UnsetSessionPayload; result: void }
 }
 
 export interface AuthenticatableFromRequestPayload {
@@ -56,6 +61,10 @@ export interface AuthenticatableFromRequestPayload {
 export interface RenderAuthenticationResponsePayload {
   authenticatable: Authenticatable
   sessionToken?: string
+}
+
+export interface RenderSessionsResponsePayload {
+  authenticatable: Authenticatable
 }
 
 export interface SetSessionPayload {
@@ -70,4 +79,10 @@ export interface ShapeSignUpParametersPayload {
 
 export interface ShapeUpdateAuthenticatableParametersPayload {
   parameters: Parameters
+}
+
+export interface UnsetSessionPayload {
+  authenticatable: Authenticatable
+  request: Request
+  sessionId?: string
 }

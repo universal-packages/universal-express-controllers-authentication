@@ -149,6 +149,30 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
+  @RegisterAction('logOut')
+  public async logOut(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      await CURRENT_AUTHENTICATION.instance.performDynamic('unset-session', { request: this.request, authenticatable, sessionId: this.request.query.sessionId as string })
+    } else {
+      this.status('UNAUTHORIZED')
+    }
+  }
+
+  @RegisterAction('me')
+  public async me(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: authenticatable })
+
+      this.json(rendered)
+    } else {
+      this.status('UNAUTHORIZED')
+    }
+  }
+
   @RegisterAction('requestConfirmation')
   public async requestConfirmation(): Promise<any> {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
@@ -231,6 +255,19 @@ export default class AuthenticationController extends BaseController {
       case 'warning':
         this.status('ACCEPTED').json(result)
         break
+    }
+  }
+
+  @RegisterAction('sessions')
+  public async session(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      const sessions = await CURRENT_AUTHENTICATION.instance.performDynamic('render-sessions-response', { authenticatable: authenticatable })
+
+      this.json(sessions)
+    } else {
+      this.status('UNAUTHORIZED')
     }
   }
 
