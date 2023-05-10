@@ -15,7 +15,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\""
   },
   "dependencies": {
-    "@universal-packages/authentication": "^1.5.0",
+    "@universal-packages/authentication": "^1.5.1",
     "@universal-packages/express-controllers-parameters": "^1.1.2"
   },
   "peerDependencies": {
