@@ -175,18 +175,15 @@ export default class AuthenticationController extends BaseController {
 
   @RegisterAction('requestConfirmation')
   public async requestConfirmation(): Promise<any> {
-    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
-
     let parameters: RequestConfirmationPayload
 
     try {
-      parameters = this.request.parameters.shape<RequestConfirmationPayload>({ credential: { optional: true }, credentialKind: { enum: new Set(['email', 'phone']) } })
+      parameters = this.request.parameters.shape<RequestConfirmationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
     } catch (error) {
       return this.status('BAD_REQUEST').json({ parameters: error.message })
     }
 
-    // Authenticatable us optional here because the user could be requesting from a session or not
-    const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-confirmation', { authenticatable, ...parameters })
+    const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-confirmation', parameters)
 
     switch (result.status) {
       case 'failure':
