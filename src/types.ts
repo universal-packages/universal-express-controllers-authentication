@@ -65,6 +65,7 @@ export interface RenderAuthenticationResponsePayload {
 
 export interface RenderSessionsResponsePayload {
   authenticatable: Authenticatable
+  request: Request
 }
 
 export interface SetSessionPayload {

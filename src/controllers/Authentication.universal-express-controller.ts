@@ -263,7 +263,7 @@ export default class AuthenticationController extends BaseController {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
     if (authenticatable) {
-      const sessions = await CURRENT_AUTHENTICATION.instance.performDynamic('render-sessions-response', { authenticatable: authenticatable })
+      const sessions = await CURRENT_AUTHENTICATION.instance.performDynamic('render-sessions-response', { authenticatable: authenticatable, request: this.request })
 
       this.json(sessions)
     } else {
