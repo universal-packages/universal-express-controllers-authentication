@@ -32,7 +32,7 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/verify-unlock`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email.unlock-active', oneTimePassword })
+          body: JSON.stringify({ credential: 'email.unlock-active', oneTimePassword })
         })
 
         expect(response.status).toEqual(200)
@@ -49,7 +49,7 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/verify-unlock`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email.unlock-active', oneTimePassword: 'nop' })
+          body: JSON.stringify({ credential: 'email.unlock-active', oneTimePassword: 'nop' })
         })
 
         expect(response.status).toEqual(400)
@@ -72,7 +72,7 @@ describe('AuthenticationController', (): void => {
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/identifier was not provided and is not optional'
+          parameters: 'request/credential was not provided and is not optional'
         })
       })
     })

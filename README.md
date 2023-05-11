@@ -77,14 +77,14 @@ Additionally takes the following ones:
       Enables the controller to expose this action
     - **`path`** `String` `default: log-in`
       Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: POST`
+    - **`method`** `HTTPVerb` `default: DELETE`
       Lets customize the method to access this action
   - **`me`**
     - **`enable`** `Boolean` `default: true`
       Enables the controller to expose this action
     - **`path`** `String` `default: log-in`
       Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: POST`
+    - **`method`** `HTTPVerb` `default: GET`
       Lets customize the method to access this action
   - **`requestConfirmation`**
     - **`enable`** `Boolean` `default: true`
@@ -114,12 +114,19 @@ Additionally takes the following ones:
       Enables the customization of the route for this action
     - **`method`** `HTTPVerb` `default: PUT`
       Lets customize the method to access this action
+  - **`requestUnlock`**
+    - **`enable`** `Boolean` `default: true`
+      Enables the controller to expose this action
+    - **`path`** `String` `default: request-multi-factor`
+      Enables the customization of the route for this action
+    - **`method`** `HTTPVerb` `default: PUT`
+      Lets customize the method to access this action
   - **`sessions`**
     - **`enable`** `Boolean` `default: true`
       Enables the controller to expose this action
     - **`path`** `String` `default: log-in`
       Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: POST`
+    - **`method`** `HTTPVerb` `default: GET`
       Lets customize the method to access this action
   - **`signUp`**
     - **`enable`** `Boolean` `default: true`

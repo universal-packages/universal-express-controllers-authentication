@@ -27,28 +27,10 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email.multi-factor-active', credentialKind: 'email' })
+          body: JSON.stringify({ credential: 'email.multi-factor-active' })
         })
 
         expect(response.status).toEqual(200)
-      })
-    })
-
-    describe('when the multi-factor request fails (identifier invalid)', (): void => {
-      it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
-
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email.nothing', credentialKind: 'email' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'nothing-to-do' })
       })
     })
 
@@ -62,7 +44,7 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email', credentialKind: 'email' })
+          body: JSON.stringify({ credential: 'email' })
         })
 
         expect(response.status).toEqual(202)
@@ -84,12 +66,12 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email', credentialKind: 'id' })
+          body: JSON.stringify({})
         })
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "id" was given'
+          parameters: 'request/credential was not provided and is not optional'
         })
       })
     })

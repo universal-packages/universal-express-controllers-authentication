@@ -32,7 +32,7 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/verify-password-reset`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email', oneTimePassword, password: 'new-password' })
+          body: JSON.stringify({ credential: 'email', oneTimePassword, password: 'new-password' })
         })
 
         expect(response.status).toEqual(200)
@@ -54,7 +54,7 @@ describe('AuthenticationController', (): void => {
         let response = await fetch(`http://localhost:${port}/authentication/verify-password-reset`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: 'email', oneTimePassword, password: 'short' })
+          body: JSON.stringify({ credential: 'email', oneTimePassword, password: 'short' })
         })
 
         expect(response.status).toEqual(400)
@@ -77,7 +77,7 @@ describe('AuthenticationController', (): void => {
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/identifier was not provided and is not optional'
+          parameters: 'request/credential was not provided and is not optional'
         })
       })
     })

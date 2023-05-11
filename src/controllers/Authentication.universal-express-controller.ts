@@ -219,7 +219,7 @@ export default class AuthenticationController extends BaseController {
     let parameters: RequestMultiFactorPayload
 
     try {
-      parameters = this.request.parameters.shape<RequestMultiFactorPayload>('identifier', { credentialKind: { enum: new Set(['email', 'phone']) } })
+      parameters = this.request.parameters.shape<RequestMultiFactorPayload>('credential')
     } catch (error) {
       return this.status('BAD_REQUEST').json({ parameters: error.message })
     }
@@ -227,9 +227,6 @@ export default class AuthenticationController extends BaseController {
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-multi-factor', parameters)
 
     switch (result.status) {
-      case 'failure':
-        this.status('BAD_REQUEST').json(result)
-        break
       case 'warning':
         this.status('ACCEPTED').json(result)
         break
@@ -241,12 +238,31 @@ export default class AuthenticationController extends BaseController {
     let parameters: RequestPasswordResetPayload
 
     try {
-      parameters = this.request.parameters.shape<RequestPasswordResetPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
+      parameters = this.request.parameters.shape<RequestPasswordResetPayload>('credential')
     } catch (error) {
       return this.status('BAD_REQUEST').json({ parameters: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-password-reset', parameters)
+
+    switch (result.status) {
+      case 'warning':
+        this.status('ACCEPTED').json(result)
+        break
+    }
+  }
+
+  @RegisterAction('requestUnlock')
+  public async requestUnlock(): Promise<any> {
+    let parameters: RequestPasswordResetPayload
+
+    try {
+      parameters = this.request.parameters.shape<RequestPasswordResetPayload>('credential')
+    } catch (error) {
+      return this.status('BAD_REQUEST').json({ parameters: error.message })
+    }
+
+    const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-unlock', parameters)
 
     switch (result.status) {
       case 'warning':
@@ -415,7 +431,7 @@ export default class AuthenticationController extends BaseController {
     let parameters: VerifyMultiFactorPayload
 
     try {
-      parameters = this.request.parameters.shape<VerifyMultiFactorPayload>('identifier', 'oneTimePassword')
+      parameters = this.request.parameters.shape<VerifyMultiFactorPayload>('credential', 'oneTimePassword')
     } catch (error) {
       return this.status('BAD_REQUEST').json({ parameters: error.message })
     }
@@ -448,7 +464,7 @@ export default class AuthenticationController extends BaseController {
     let parameters: VerifyPasswordResetPayload
 
     try {
-      parameters = this.request.parameters.shape<VerifyPasswordResetPayload>('identifier', 'oneTimePassword', 'password')
+      parameters = this.request.parameters.shape<VerifyPasswordResetPayload>('credential', 'oneTimePassword', 'password')
     } catch (error) {
       return this.status('BAD_REQUEST').json({ parameters: error.message })
     }
@@ -467,7 +483,7 @@ export default class AuthenticationController extends BaseController {
     let parameters: VerifyUnlockPayload
 
     try {
-      parameters = this.request.parameters.shape<VerifyUnlockPayload>('identifier', 'oneTimePassword')
+      parameters = this.request.parameters.shape<VerifyUnlockPayload>('credential', 'oneTimePassword')
     } catch (error) {
       return this.status('BAD_REQUEST').json({ parameters: error.message })
     }

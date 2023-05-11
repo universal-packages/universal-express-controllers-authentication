@@ -14,6 +14,7 @@ export type RouteName =
   | 'requestCorroboration'
   | 'requestMultiFactor'
   | 'requestPasswordReset'
+  | 'requestUnlock'
   | 'sessions'
   | 'signUp'
   | 'updateAuthenticatable'

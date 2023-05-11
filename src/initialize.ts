@@ -18,6 +18,7 @@ export async function initialize(options: ExpressControllerAuthenticationOptions
       requestCorroboration: { enable: true, path: 'request-corroboration', method: 'PUT', ...routesOptions.requestCorroboration },
       requestMultiFactor: { enable: true, path: 'request-multi-factor', method: 'PUT', ...routesOptions.requestMultiFactor },
       requestPasswordReset: { enable: true, path: 'request-password-reset', method: 'PUT', ...routesOptions.requestPasswordReset },
+      requestUnlock: { enable: true, path: 'request-unlock', method: 'PUT', ...routesOptions.requestUnlock },
       signUp: { enable: true, path: 'sign-up', method: 'POST', ...routesOptions.signUp },
       sessions: { enable: true, path: 'sessions', method: 'GET', ...routesOptions.sessions },
       updateAuthenticatable: { enable: true, path: 'update-authenticatable', method: 'PATCH', ...routesOptions.updateAuthenticatable },

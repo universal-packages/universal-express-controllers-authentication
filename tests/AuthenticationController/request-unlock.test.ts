@@ -16,35 +16,35 @@ beforeAll(async (): Promise<void> => {
 })
 
 describe('AuthenticationController', (): void => {
-  describe('request-password-reset', (): void => {
-    describe('when the password-reset request is successful', (): void => {
+  describe('request-unlock', (): void => {
+    describe('when the unlock request is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-unlock`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email' })
+          body: JSON.stringify({ credential: 'email.locked' })
         })
 
         expect(response.status).toEqual(200)
       })
     })
 
-    describe('when no authenticatable can be match with the credential', (): void => {
+    describe('when the authenticatable is not active for multi factor', (): void => {
       it('returns fail', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-unlock`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.nothing' })
+          body: JSON.stringify({ credential: 'email' })
         })
 
         expect(response.status).toEqual(202)
@@ -63,7 +63,7 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, {
+        let response = await fetch(`http://localhost:${port}/authentication/request-unlock`, {
           method: 'put',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({})
