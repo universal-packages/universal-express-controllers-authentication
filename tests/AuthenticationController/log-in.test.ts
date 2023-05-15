@@ -30,7 +30,7 @@ describe('AuthenticationController', (): void => {
           body: JSON.stringify({ credential: 'email', password: 'password' })
         })
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: {}, sessionToken: '' })
+        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: {}, sessionToken: '' })
       })
     })
 
@@ -47,6 +47,7 @@ describe('AuthenticationController', (): void => {
           body: JSON.stringify({ credential: 'email', password: 'nop' })
         })
         expect(response.status).toEqual(400)
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'invalid-credentials' })
       })
     })
 
@@ -93,7 +94,7 @@ describe('AuthenticationController', (): void => {
 
         let response = await fetch(`http://localhost:${port}/authentication/log-in`, { method: 'post' })
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ parameters: 'request/credential was not provided and is not optional' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/credential was not provided and is not optional' })
       })
     })
   })

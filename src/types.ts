@@ -47,8 +47,8 @@ export interface CurrentAuthentication {
 
 export interface AuthDynamicNames extends AN {
   'authenticatable-from-request': { payload: AuthenticatableFromRequestPayload; result: Authenticatable }
-  'render-authentication-response': { payload: RenderAuthenticationResponsePayload; result: Record<string, any> }
-  'render-sessions-response': { payload: RenderSessionsResponsePayload; result: Record<string, any> }
+  'render-authenticatable': { payload: RenderAuthenticatablePayload; result: Record<string, any> }
+  'render-sessions': { payload: RenderSessionsPayload; result: Record<string, any> }
   'set-session': { payload: SetSessionPayload; result: string }
   'shape-sign-up-parameters': { payload: ShapeSignUpParametersPayload; result: SignUpPayload }
   'shape-update-authenticatable-parameters': { payload: ShapeUpdateAuthenticatableParametersPayload; result: UpdateAuthenticatablePayload }
@@ -59,12 +59,11 @@ export interface AuthenticatableFromRequestPayload {
   request: Request
 }
 
-export interface RenderAuthenticationResponsePayload {
+export interface RenderAuthenticatablePayload {
   authenticatable: Authenticatable
-  sessionToken?: string
 }
 
-export interface RenderSessionsResponsePayload {
+export interface RenderSessionsPayload {
   authenticatable: Authenticatable
   request: Request
 }

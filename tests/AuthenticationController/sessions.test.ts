@@ -30,7 +30,7 @@ describe('AuthenticationController', (): void => {
 
         const response = await fetch(`http://localhost:${port}/authentication/sessions`, { headers: { 'Content-Type': 'application/json' } })
         expect(response.status).toEqual(200)
-        expect(await response.json()).toEqual({})
+        expect(await response.json()).toEqual({ status: 'success', sessions: {} })
       })
     })
 

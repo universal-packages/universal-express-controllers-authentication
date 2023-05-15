@@ -35,7 +35,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: { email: 'new@email.com' } })
+        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: { email: 'new@email.com' } })
       })
     })
 
@@ -57,7 +57,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ validation: { errors: { email: ['invalid-email'] }, valid: false } })
+        expect(await response.json()).toMatchObject({ status: 'failure', validation: { errors: { email: ['invalid-email'] }, valid: false } })
       })
     })
 
@@ -96,7 +96,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ parameters: 'request/credential was not provided and is not optional' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/credential was not provided and is not optional' })
       })
     })
   })

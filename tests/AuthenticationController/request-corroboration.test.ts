@@ -40,6 +40,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
+        expect(await response.json()).toMatchObject({ status: 'success' })
       })
     })
 
@@ -57,7 +58,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'corroboration-disabled' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'corroboration-disabled' })
       })
     })
 
@@ -80,7 +81,8 @@ describe('AuthenticationController', (): void => {
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "id" was given'
+          status: 'failure',
+          message: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "id" was given'
         })
       })
     })

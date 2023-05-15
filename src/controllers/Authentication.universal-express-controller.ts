@@ -32,7 +32,7 @@ export default class AuthenticationController extends BaseController {
       try {
         parameters = this.request.parameters.shape<ConnectProviderPayload>('provider', 'token')
       } catch (error) {
-        return this.status('BAD_REQUEST').json({ parameters: error.message })
+        return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
       }
 
       const result = await CURRENT_AUTHENTICATION.instance.performDynamic('connect-provider', { authenticatable, ...parameters })
@@ -45,9 +45,9 @@ export default class AuthenticationController extends BaseController {
           this.status('ACCEPTED').json(result)
           break
         case 'success':
-          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
+          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-          this.json(rendered)
+          this.json({ status: 'success', authenticatable: rendered })
           break
       }
     } else {
@@ -62,7 +62,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<ContinueWithProviderPayload>('provider', 'token')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('continue-with-provider', parameters)
@@ -78,12 +78,9 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
-          authenticatable: result.authenticatable,
-          sessionToken
-        })
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-        this.json(rendered)
+        this.json({ status: 'success', authenticatable: rendered, sessionToken })
         break
     }
   }
@@ -98,7 +95,7 @@ export default class AuthenticationController extends BaseController {
       try {
         parameters = this.request.parameters.shape<InviteAuthenticatablePayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
       } catch (error) {
-        return this.status('BAD_REQUEST').json({ parameters: error.message })
+        return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
       }
 
       const result = await CURRENT_AUTHENTICATION.instance.performDynamic('invite-authenticatable', { inviterId: authenticatable.id, ...parameters })
@@ -107,6 +104,8 @@ export default class AuthenticationController extends BaseController {
         case 'failure':
           this.status('BAD_REQUEST').json(result)
           break
+        case 'success':
+          this.json(result)
       }
     } else {
       this.status('UNAUTHORIZED')
@@ -120,7 +119,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<LogInPayload>('credential', 'password')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('log-in', parameters)
@@ -139,12 +138,9 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
-          authenticatable: result.authenticatable,
-          sessionToken
-        })
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-        this.json(rendered)
+        this.json({ status: 'success', authenticatable: rendered, sessionToken })
         break
     }
   }
@@ -165,9 +161,9 @@ export default class AuthenticationController extends BaseController {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
     if (authenticatable) {
-      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: authenticatable })
+      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: authenticatable })
 
-      this.json(rendered)
+      this.json({ status: 'success', authenticatable: rendered })
     } else {
       this.status('UNAUTHORIZED')
     }
@@ -180,7 +176,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<RequestConfirmationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-confirmation', parameters)
@@ -192,6 +188,8 @@ export default class AuthenticationController extends BaseController {
       case 'warning':
         this.status('ACCEPTED').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 
@@ -202,7 +200,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<RequestCorroborationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } })
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-corroboration', parameters)
@@ -211,6 +209,8 @@ export default class AuthenticationController extends BaseController {
       case 'failure':
         this.status('BAD_REQUEST').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 
@@ -221,7 +221,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<RequestMultiFactorPayload>('credential')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-multi-factor', parameters)
@@ -230,6 +230,8 @@ export default class AuthenticationController extends BaseController {
       case 'warning':
         this.status('ACCEPTED').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 
@@ -240,7 +242,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<RequestPasswordResetPayload>('credential')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-password-reset', parameters)
@@ -249,6 +251,8 @@ export default class AuthenticationController extends BaseController {
       case 'warning':
         this.status('ACCEPTED').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 
@@ -259,7 +263,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<RequestPasswordResetPayload>('credential')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('request-unlock', parameters)
@@ -268,6 +272,8 @@ export default class AuthenticationController extends BaseController {
       case 'warning':
         this.status('ACCEPTED').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 
@@ -276,9 +282,9 @@ export default class AuthenticationController extends BaseController {
     const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
 
     if (authenticatable) {
-      const sessions = await CURRENT_AUTHENTICATION.instance.performDynamic('render-sessions-response', { authenticatable: authenticatable, request: this.request })
+      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-sessions', { authenticatable: authenticatable, request: this.request })
 
-      this.json(sessions)
+      this.json({ status: 'success', sessions: rendered })
     } else {
       this.status('UNAUTHORIZED')
     }
@@ -291,7 +297,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = CURRENT_AUTHENTICATION.instance.performDynamicSync('shape-sign-up-parameters', { parameters: this.request.parameters })
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('sign-up', parameters)
@@ -310,12 +316,9 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
-          authenticatable: result.authenticatable,
-          sessionToken
-        })
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-        this.json(rendered)
+        this.json({ status: 'success', authenticatable: rendered, sessionToken })
         break
     }
   }
@@ -330,7 +333,7 @@ export default class AuthenticationController extends BaseController {
       try {
         parameters = CURRENT_AUTHENTICATION.instance.performDynamicSync('shape-update-authenticatable-parameters', { parameters: this.request.parameters })
       } catch (error) {
-        return this.status('BAD_REQUEST').json({ parameters: error.message })
+        return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
       }
 
       const result = await CURRENT_AUTHENTICATION.instance.performDynamic('update-authenticatable', { authenticatable, ...parameters })
@@ -340,9 +343,9 @@ export default class AuthenticationController extends BaseController {
           this.status('BAD_REQUEST').json(result)
           break
         case 'success':
-          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
+          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-          this.json(rendered)
+          this.json({ status: 'success', authenticatable: rendered })
           break
       }
     } else {
@@ -363,7 +366,7 @@ export default class AuthenticationController extends BaseController {
           corroborationToken: { optional: true }
         })
       } catch (error) {
-        return this.status('BAD_REQUEST').json({ parameters: error.message })
+        return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
       }
 
       const result = await CURRENT_AUTHENTICATION.instance.performDynamic('update-credential', { authenticatable, ...parameters })
@@ -373,9 +376,9 @@ export default class AuthenticationController extends BaseController {
           this.status('BAD_REQUEST').json(result)
           break
         case 'success':
-          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
+          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-          this.json(rendered)
+          this.json({ status: 'success', authenticatable: rendered })
           break
       }
     } else {
@@ -390,16 +393,16 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<VerifyConfirmationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-confirmation', parameters)
 
     switch (result.status) {
       case 'success':
-        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', { authenticatable: result.authenticatable })
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-        this.json(rendered)
+        this.json({ status: 'success', authenticatable: rendered })
         break
       case 'failure':
         this.status('BAD_REQUEST').json(result)
@@ -414,7 +417,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<VerifyCorroborationPayload>('credential', { credentialKind: { enum: new Set(['email', 'phone']) } }, 'oneTimePassword')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-corroboration', parameters)
@@ -423,6 +426,8 @@ export default class AuthenticationController extends BaseController {
       case 'failure':
         this.status('BAD_REQUEST').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 
@@ -433,7 +438,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<VerifyMultiFactorPayload>('credential', 'oneTimePassword')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-multi-factor', parameters)
@@ -449,12 +454,9 @@ export default class AuthenticationController extends BaseController {
           authenticatable: result.authenticatable
         })
 
-        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authentication-response', {
-          authenticatable: result.authenticatable,
-          sessionToken
-        })
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
 
-        this.json(rendered)
+        this.json({ status: 'success', authenticatable: rendered, sessionToken })
         break
     }
   }
@@ -466,7 +468,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<VerifyPasswordResetPayload>('credential', 'oneTimePassword', 'password')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-password-reset', parameters)
@@ -475,6 +477,8 @@ export default class AuthenticationController extends BaseController {
       case 'failure':
         this.status('BAD_REQUEST').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 
@@ -485,7 +489,7 @@ export default class AuthenticationController extends BaseController {
     try {
       parameters = this.request.parameters.shape<VerifyUnlockPayload>('credential', 'oneTimePassword')
     } catch (error) {
-      return this.status('BAD_REQUEST').json({ parameters: error.message })
+      return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
     }
 
     const result = await CURRENT_AUTHENTICATION.instance.performDynamic('verify-unlock', parameters)
@@ -494,6 +498,8 @@ export default class AuthenticationController extends BaseController {
       case 'failure':
         this.status('BAD_REQUEST').json(result)
         break
+      case 'success':
+        this.json(result)
     }
   }
 }

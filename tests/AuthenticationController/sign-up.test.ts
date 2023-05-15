@@ -40,7 +40,7 @@ describe('AuthenticationController', (): void => {
           })
         })
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: {}, sessionToken: '' })
+        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: {}, sessionToken: '' })
       })
     })
 
@@ -75,7 +75,7 @@ describe('AuthenticationController', (): void => {
           })
         })
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'corroboration-required' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'corroboration-required' })
       })
     })
 
@@ -112,7 +112,7 @@ describe('AuthenticationController', (): void => {
           })
         })
         expect(response.status).toEqual(202)
-        expect(await response.json()).toMatchObject({ message: 'confirmation-inbound' })
+        expect(await response.json()).toMatchObject({ status: 'warning', message: 'confirmation-inbound' })
       })
     })
 
@@ -129,7 +129,7 @@ describe('AuthenticationController', (): void => {
           body: JSON.stringify({ attributes: {} })
         })
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ parameters: 'request/credentialKind was not provided and is not optional' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/credentialKind was not provided and is not optional' })
       })
     })
   })

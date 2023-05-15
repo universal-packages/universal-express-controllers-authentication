@@ -45,7 +45,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: { universalId: 'any.nothing' } })
+        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: { universalId: 'any.nothing' } })
       })
     })
 
@@ -67,7 +67,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'provider-error' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'provider-error' })
       })
     })
 
@@ -89,7 +89,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(202)
-        expect(await response.json()).toMatchObject({ message: 'already-connected' })
+        expect(await response.json()).toMatchObject({ status: 'warning', message: 'already-connected' })
       })
     })
 
@@ -150,7 +150,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ parameters: 'request/provider was not provided and is not optional' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/provider was not provided and is not optional' })
       })
     })
   })

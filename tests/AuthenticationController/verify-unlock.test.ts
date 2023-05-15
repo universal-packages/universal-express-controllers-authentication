@@ -36,6 +36,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
+        expect(await response.json()).toMatchObject({ status: 'success' })
       })
     })
 
@@ -53,7 +54,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ message: 'invalid-one-time-password' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'invalid-one-time-password' })
       })
     })
 
@@ -72,7 +73,8 @@ describe('AuthenticationController', (): void => {
 
         expect(response.status).toEqual(400)
         expect(await response.json()).toMatchObject({
-          parameters: 'request/credential was not provided and is not optional'
+          status: 'failure',
+          message: 'request/credential was not provided and is not optional'
         })
       })
     })

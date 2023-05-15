@@ -30,7 +30,7 @@ describe('AuthenticationController', (): void => {
 
         const response = await fetch(`http://localhost:${port}/authentication/me`, { headers: { 'Content-Type': 'application/json' } })
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: {} })
+        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: {} })
       })
     })
 
@@ -41,8 +41,7 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/me`, {headers: { 'Content-Type': 'application/json' }
-        })
+        let response = await fetch(`http://localhost:${port}/authentication/me`, { headers: { 'Content-Type': 'application/json' } })
         expect(response.status).toEqual(401)
       })
     })

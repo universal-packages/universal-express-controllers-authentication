@@ -35,7 +35,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ authenticatable: { username: 'new' } })
+        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: { username: 'new' } })
       })
     })
 
@@ -57,7 +57,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
+        expect(await response.json()).toMatchObject({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
       })
     })
 
@@ -96,7 +96,7 @@ describe('AuthenticationController', (): void => {
         })
 
         expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ parameters: 'request/attributes was not provided and is not optional' })
+        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/attributes was not provided and is not optional' })
       })
     })
   })
