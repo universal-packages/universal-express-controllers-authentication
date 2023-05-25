@@ -386,6 +386,27 @@ export default class AuthenticationController extends BaseController {
     }
   }
 
+  @RegisterAction('updateDeviceId')
+  public async updateDeviceId(): Promise<any> {
+    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+
+    if (authenticatable) {
+      let parameters: { deviceId: string }
+
+      try {
+        parameters = this.request.parameters.shape<{ deviceId: string }>('deviceId')
+      } catch (error) {
+        return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
+      }
+
+      await CURRENT_AUTHENTICATION.instance.performDynamic('set-session-device-id', { authenticatable, request: this.request, deviceId: parameters.deviceId })
+
+      this.json({ status: 'success' })
+    } else {
+      this.status('UNAUTHORIZED')
+    }
+  }
+
   @RegisterAction('verifyConfirmation')
   public async verifyConfirmation(): Promise<any> {
     let parameters: VerifyConfirmationPayload

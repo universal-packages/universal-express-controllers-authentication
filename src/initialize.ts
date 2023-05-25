@@ -23,6 +23,7 @@ export async function initialize(options: ExpressControllerAuthenticationOptions
       sessions: { enable: true, path: 'sessions', method: 'GET', ...routesOptions.sessions },
       updateAuthenticatable: { enable: true, path: 'update-authenticatable', method: 'PATCH', ...routesOptions.updateAuthenticatable },
       updateCredential: { enable: true, path: 'update-credential', method: 'PATCH', ...routesOptions.updateCredential },
+      updateDeviceId: { enable: true, path: 'update-device-id', method: 'PATCH', ...routesOptions.updateDeviceId },
       verifyConfirmation: { enable: true, path: 'verify-confirmation', method: 'PUT', ...routesOptions.verifyConfirmation },
       verifyCorroboration: { enable: true, path: 'verify-corroboration', method: 'PUT', ...routesOptions.verifyCorroboration },
       verifyMultiFactor: { enable: true, path: 'verify-multi-factor', method: 'PUT', ...routesOptions.verifyMultiFactor },

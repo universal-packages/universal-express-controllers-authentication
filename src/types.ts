@@ -19,6 +19,7 @@ export type RouteName =
   | 'signUp'
   | 'updateAuthenticatable'
   | 'updateCredential'
+  | 'updateDeviceId'
   | 'verifyConfirmation'
   | 'verifyCorroboration'
   | 'verifyMultiFactor'
@@ -50,6 +51,7 @@ export interface AuthDynamicNames extends AN {
   'render-authenticatable': { payload: RenderAuthenticatablePayload; result: Record<string, any> }
   'render-sessions': { payload: RenderSessionsPayload; result: Record<string, any> }
   'set-session': { payload: SetSessionPayload; result: string }
+  'set-session-device-id': { payload: SetSessionDeviceIdPayload; result: void }
   'shape-sign-up-parameters': { payload: ShapeSignUpParametersPayload; result: SignUpPayload }
   'shape-update-authenticatable-parameters': { payload: ShapeUpdateAuthenticatableParametersPayload; result: UpdateAuthenticatablePayload }
   'unset-session': { payload: UnsetSessionPayload; result: void }
@@ -72,6 +74,12 @@ export interface SetSessionPayload {
   authenticatable: Authenticatable
   request: Request
   response: Response
+}
+
+export interface SetSessionDeviceIdPayload {
+  authenticatable: Authenticatable
+  request: Request
+  deviceId: string
 }
 
 export interface ShapeSignUpParametersPayload {

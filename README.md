@@ -149,6 +149,13 @@ Additionally takes the following ones:
       Enables the customization of the route for this action
     - **`method`** `HTTPVerb` `default: PATCH`
       Lets customize the method to access this action
+  - **`updateSessionDeviceId`**
+    - **`enable`** `Boolean` `default: true`
+      Enables the controller to expose this action
+    - **`path`** `String`
+      Enables the customization of the route for this action
+    - **`method`** `HTTPVerb` `default: PATCH`
+      Lets customize the method to access this action
   - **`verifyConfirmation`**
     - **`enable`** `Boolean` `default: true`
       Enables the controller to expose this action
