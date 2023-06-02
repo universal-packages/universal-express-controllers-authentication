@@ -1,4 +1,5 @@
 import { AuthDynamic, Authentication } from '@universal-packages/authentication'
+
 import { AuthDynamicNames, SetSessionDeviceIdPayload } from '../types'
 
 @AuthDynamic<AuthDynamicNames>('set-session-device-id', true)

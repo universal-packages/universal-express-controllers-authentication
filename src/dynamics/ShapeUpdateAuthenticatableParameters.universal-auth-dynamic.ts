@@ -1,4 +1,5 @@
 import { AuthDynamic, UpdateAuthenticatablePayload } from '@universal-packages/authentication'
+
 import { AuthDynamicNames, ShapeUpdateAuthenticatableParametersPayload } from '../types'
 
 @AuthDynamic<AuthDynamicNames>('shape-update-authenticatable-parameters', true)

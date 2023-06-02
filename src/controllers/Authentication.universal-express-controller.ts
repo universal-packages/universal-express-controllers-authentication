@@ -17,6 +17,7 @@ import {
   VerifyUnlockPayload
 } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
+
 import { RegisterAction, RegisterController } from '../decorators'
 import { CURRENT_AUTHENTICATION } from '../initialize'
 

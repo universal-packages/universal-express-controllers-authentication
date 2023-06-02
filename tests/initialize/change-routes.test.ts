@@ -1,5 +1,6 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import fetch from 'node-fetch'
+
 import { AuthenticationRoutes, initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 

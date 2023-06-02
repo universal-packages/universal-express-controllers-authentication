@@ -1,5 +1,6 @@
 import { Action, Controller } from '@universal-packages/express-controllers'
 import { ClassDecoratorFunction, MethodDecoratorFunction } from '@universal-packages/namespaced-decorators'
+
 import { CURRENT_AUTHENTICATION } from './initialize'
 import { RouteName } from './types'
 

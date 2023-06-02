@@ -1,8 +1,9 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
+import { NextFunction, Request, Response } from 'express'
 import fetch from 'node-fetch'
+
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
-import { NextFunction, Request, Response } from 'express'
 
 const port = 4000 + Number(process.env['JEST_WORKER_ID'])
 

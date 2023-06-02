@@ -1,4 +1,5 @@
 import { AuthDynamic, Authentication } from '@universal-packages/authentication'
+
 import { AuthDynamicNames, UnsetSessionPayload } from '../types'
 
 @AuthDynamic<AuthDynamicNames>('unset-session', true)

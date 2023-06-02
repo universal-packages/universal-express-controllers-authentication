@@ -1,4 +1,5 @@
 import { AuthDynamic, Authentication } from '@universal-packages/authentication'
+
 import { AuthDynamicNames, RenderSessionsPayload } from '../types'
 
 @AuthDynamic<AuthDynamicNames>('render-sessions', true)

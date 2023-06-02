@@ -1,5 +1,6 @@
 import { AuthenticatableClass, Authentication } from '@universal-packages/authentication'
 import '@universal-packages/express-controllers-parameters'
+
 import { AuthenticationRoutes, CurrentAuthentication, ExpressControllerAuthenticationOptions } from './types'
 
 export const CURRENT_AUTHENTICATION: CurrentAuthentication = { instance: null, options: null }

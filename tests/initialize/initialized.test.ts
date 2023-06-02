@@ -1,4 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
+
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 

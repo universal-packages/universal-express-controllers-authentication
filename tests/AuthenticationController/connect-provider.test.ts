@@ -1,6 +1,7 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
 import fetch from 'node-fetch'
+
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
 import GetUniversalUserDataDynamic from '../__fixtures__/GetUniversalDataDynamic'

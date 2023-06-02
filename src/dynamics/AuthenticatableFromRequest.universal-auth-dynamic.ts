@@ -1,4 +1,5 @@
 import { AuthDynamic } from '@universal-packages/authentication'
+
 import { AuthDynamicNames, AuthenticatableFromRequestPayload } from '../types'
 
 @AuthDynamic<AuthDynamicNames>('authenticatable-from-request', true)

@@ -1,4 +1,5 @@
 import { AuthDynamic, SignUpPayload } from '@universal-packages/authentication'
+
 import { AuthDynamicNames, ShapeSignUpParametersPayload } from '../types'
 
 @AuthDynamic<AuthDynamicNames>('shape-sign-up-parameters', true)
