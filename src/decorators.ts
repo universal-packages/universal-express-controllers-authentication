@@ -18,7 +18,7 @@ export function RegisterAction(route: RouteName): MethodDecoratorFunction {
 
 export function RegisterController(): ClassDecoratorFunction {
   if (CURRENT_AUTHENTICATION.instance) {
-    return Controller(CURRENT_AUTHENTICATION.options.rootPath, {})
+    return Controller(CURRENT_AUTHENTICATION.options.rootPath, { bodyParser: 'json' })
   }
 
   return (): void => {}

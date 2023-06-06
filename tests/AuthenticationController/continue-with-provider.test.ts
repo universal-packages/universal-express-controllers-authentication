@@ -14,7 +14,7 @@ afterEach(async (): Promise<void> => {
 })
 
 beforeAll(async (): Promise<void> => {
-  await initialize({ debug: true, dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
+  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
 
   CURRENT_AUTHENTICATION.instance.dynamics['get-universal-user-data'] = {
     afterHooks: [],

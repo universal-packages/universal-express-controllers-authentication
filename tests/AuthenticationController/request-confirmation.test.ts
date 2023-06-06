@@ -14,7 +14,7 @@ afterEach(async (): Promise<void> => {
 })
 
 beforeAll(async (): Promise<void> => {
-  await initialize({ debug: true, dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
+  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
 })
 
 describe('AuthenticationController', (): void => {

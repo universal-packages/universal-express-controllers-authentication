@@ -32,7 +32,7 @@ describe('initialize', (): void => {
         verifyPasswordReset: { enable: false },
         verifyUnlock: { enable: false }
       }
-      await initialize({ debug: true, dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret', routes }, TestAuthenticatable)
+      await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret', routes }, TestAuthenticatable)
 
       app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
       app.on('request/error', console.log)

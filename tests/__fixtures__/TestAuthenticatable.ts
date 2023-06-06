@@ -8,11 +8,11 @@ export default class TestAuthenticatable implements Authenticatable {
   })
 
   public static readonly findById = jest.fn().mockImplementation((id: string | number | bigint): TestAuthenticatable => {
-    return this, this.instanceFromInput(String(id))
+    return this.instanceFromInput(String(id))
   })
 
-  public static readonly findByProviderId = jest.fn().mockImplementation((_provider: string, id: string | number | bigint): TestAuthenticatable => {
-    return this, this.instanceFromInput(String(id))
+  public static readonly findByProviderId = jest.fn().mockImplementation((provider: string, id: string | number | bigint): TestAuthenticatable => {
+    return this.instanceFromInput(String(id))
   })
 
   public static readonly existsWithCredential = jest.fn().mockImplementation((_credentialKind: CredentialKind, credential: string): boolean => {
@@ -124,6 +124,9 @@ export default class TestAuthenticatable implements Authenticatable {
           instance.multiFactorActiveAt = null
           break
 
+        case 'new-unconfirmed':
+          instance[`unconfirmed${credentialKind.charAt(0).toUpperCase()}${credentialKind.slice(1)}`] = 'new'
+
         case 'no-password':
           instance.encryptedPassword = null
           break
@@ -138,6 +141,17 @@ export default class TestAuthenticatable implements Authenticatable {
           break
 
         case 'universal-connected':
+          instance['email'] = 'user@universal.com'
+          instance['universalId'] = 80085
+          break
+
+        case 'universal-connected-confirmation-pending':
+          instance['unconfirmedEmail'] = 'user@universal.com'
+          instance['universalId'] = 80085
+          break
+
+        case 'universal-independent-email':
+          instance['email'] = 'other@universal.com'
           instance['universalId'] = 80085
           break
       }

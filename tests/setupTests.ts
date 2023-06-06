@@ -1,3 +1,5 @@
+import '@universal-packages/dynamic-api-jest'
+
 import TestAuthenticatable from './__fixtures__/TestAuthenticatable'
 
 jest.retryTimes(process.env.CI ? 2 : 0)
