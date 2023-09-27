@@ -11,7 +11,7 @@ afterEach(async (): Promise<void> => {
   await app.stop()
 })
 
-describe('initialize', (): void => {
+describe(initialize, (): void => {
   describe('disable-routes', (): void => {
     it('disable routes if configured', async (): Promise<void> => {
       const routes: AuthenticationRoutes = {
