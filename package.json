@@ -16,7 +16,7 @@
     "update-dependents": "umaintenance update-dependents"
   },
   "dependencies": {
-    "@universal-packages/authentication": "^1.9.0",
+    "@universal-packages/authentication": "^1.9.3",
     "@universal-packages/express-controllers-parameters": "^1.1.8"
   },
   "peerDependencies": {
