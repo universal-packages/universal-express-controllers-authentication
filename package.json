@@ -20,7 +20,7 @@
     "@universal-packages/express-controllers-parameters": "^1.1.4"
   },
   "peerDependencies": {
-    "@universal-packages/express-controllers": "^1.8.1",
+    "@universal-packages/express-controllers": "^1.9.5",
     "express": "^4.18.2"
   },
   "devDependencies": {
