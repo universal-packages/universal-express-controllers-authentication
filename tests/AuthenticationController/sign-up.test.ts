@@ -1,5 +1,4 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
@@ -25,23 +24,19 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/sign-up`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            attributes: {
-              email: 'DAVID@UNIVERSAL.com',
-              username: 'david',
-              password: '12345678',
-              firstName: 'David',
-              lastName: 'De Anda',
-              name: 'David De Anda'
-            },
-            credentialKind: 'email'
-          })
+        await fPost('authentication/sign-up', {
+          attributes: {
+            email: 'DAVID@UNIVERSAL.com',
+            username: 'david',
+            password: '12345678',
+            firstName: 'David',
+            lastName: 'De Anda',
+            name: 'David De Anda'
+          },
+          credentialKind: 'email'
         })
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: {}, sessionToken: '' })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success', authenticatable: {}, sessionToken: '' })
       })
     })
 
@@ -60,23 +55,19 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/sign-up`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            attributes: {
-              email: 'DAVID@UNIVERSAL.com',
-              username: 'david',
-              password: '12345678',
-              firstName: 'David',
-              lastName: 'De Anda',
-              name: 'David De Anda'
-            },
-            credentialKind: 'email'
-          })
+        await fPost('authentication/sign-up', {
+          attributes: {
+            email: 'DAVID@UNIVERSAL.com',
+            username: 'david',
+            password: '12345678',
+            firstName: 'David',
+            lastName: 'De Anda',
+            name: 'David De Anda'
+          },
+          credentialKind: 'email'
         })
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'corroboration-required' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'corroboration-required' })
       })
     })
 
@@ -97,23 +88,19 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/sign-up`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            attributes: {
-              email: 'DAVID@UNIVERSAL.com',
-              username: 'david',
-              password: '12345678',
-              firstName: 'David',
-              lastName: 'De Anda',
-              name: 'David De Anda'
-            },
-            credentialKind: 'email'
-          })
+        await fPost('authentication/sign-up', {
+          attributes: {
+            email: 'DAVID@UNIVERSAL.com',
+            username: 'david',
+            password: '12345678',
+            firstName: 'David',
+            lastName: 'De Anda',
+            name: 'David De Anda'
+          },
+          credentialKind: 'email'
         })
-        expect(response.status).toEqual(202)
-        expect(await response.json()).toMatchObject({ status: 'warning', message: 'confirmation-inbound' })
+        expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
+        expect(fResponseBody).toMatchObject({ status: 'warning', message: 'confirmation-inbound' })
       })
     })
 
@@ -124,13 +111,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/sign-up`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ attributes: {} })
-        })
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/credentialKind was not provided and is not optional' })
+        await fPost('authentication/sign-up', {})
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'request/attributes was not provided and is not optional' })
       })
     })
   })

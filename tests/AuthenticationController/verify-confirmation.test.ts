@@ -1,5 +1,4 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
@@ -30,14 +29,9 @@ describe('AuthenticationController', (): void => {
           identifier: 'email.unconfirmed.email'
         })
 
-        let response = await fetch(`http://localhost:${port}/authentication/verify-confirmation`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.unconfirmed', credentialKind: 'email', oneTimePassword })
-        })
-
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: {} })
+        await fPut('authentication/verify-confirmation', { credential: 'email.unconfirmed', credentialKind: 'email', oneTimePassword })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success', authenticatable: {} })
       })
     })
 
@@ -48,14 +42,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/verify-confirmation`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.unconfirmed', credentialKind: 'email', oneTimePassword: 'nop' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'invalid-one-time-password' })
+        await fPut('authentication/verify-confirmation', { credential: 'email.unconfirmed', credentialKind: 'email', oneTimePassword: 'nop' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'invalid-one-time-password' })
       })
     })
 
@@ -66,17 +55,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/verify-confirmation`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({})
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({
-          status: 'failure',
-          message: 'request/credential was not provided and is not optional'
-        })
+        await fPut('authentication/verify-confirmation')
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'request/credential was not provided and is not optional' })
       })
     })
   })

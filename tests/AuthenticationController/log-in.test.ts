@@ -1,5 +1,4 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
@@ -25,13 +24,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/log-in`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email', password: 'password' })
-        })
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: {}, sessionToken: '' })
+        await fPost('authentication/log-in', { credential: 'email', password: 'password' })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success', authenticatable: {}, sessionToken: '' })
       })
     })
 
@@ -42,13 +37,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/log-in`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email', password: 'nop' })
-        })
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'invalid-credentials' })
+        await fPost('authentication/log-in', { credential: 'email', password: 'nop' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'invalid-credentials' })
       })
     })
 
@@ -69,13 +60,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/log-in`, {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.unconfirmed', password: 'password' })
-        })
-        expect(response.status).toEqual(202)
-        expect(await response.json()).toEqual({
+        await fPost('authentication/log-in', { credential: 'email.unconfirmed', password: 'password' })
+        expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
+        expect(fResponseBody).toMatchObject({
           status: 'warning',
           message: 'confirmation-required',
           metadata: {
@@ -93,9 +80,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/log-in`, { method: 'post' })
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/credential was not provided and is not optional' })
+        await fPost('authentication/log-in')
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'request/credential was not provided and is not optional' })
       })
     })
   })

@@ -1,5 +1,4 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
-import fetch from 'node-fetch'
 
 import { AuthenticationRoutes, initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -39,53 +38,53 @@ describe(initialize, (): void => {
       await app.prepare()
       await app.run()
 
-      let response = await fetch(`http://localhost:${port}/custom/change1`, { method: 'patch' })
-      expect(response.status).not.toEqual(404)
+      await fPatch('/custom/change1')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change2`, { method: 'post' })
-      expect(response.status).not.toEqual(404)
+      await fPost('/custom/change2')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change3`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change3')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change4`, { method: 'post' })
-      expect(response.status).not.toEqual(404)
+      await fPost('/custom/change4')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change5`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change5')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change6`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change6')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change7`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change7')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change8`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change8')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change9`, { method: 'post' })
-      expect(response.status).not.toEqual(404)
+      await fPost('/custom/change9')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change10`, { method: 'patch' })
-      expect(response.status).not.toEqual(404)
+      await fPatch('/custom/change10')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change11`, { method: 'patch' })
-      expect(response.status).not.toEqual(404)
+      await fPatch('/custom/change11')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change12`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change12')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change13`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change13')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change14`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change14')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change15`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change15')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/custom/change16`, { method: 'put' })
-      expect(response.status).not.toEqual(404)
+      await fPut('/custom/change16')
+      expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')
     })
   })
 })

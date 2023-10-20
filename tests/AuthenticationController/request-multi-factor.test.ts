@@ -1,6 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -25,14 +24,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email.multi-factor-active' })
-        })
-
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success' })
+        await fPut('authentication/request-multi-factor', { credential: 'email.multi-factor-active' })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success' })
       })
     })
 
@@ -43,14 +37,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email' })
-        })
-
-        expect(response.status).toEqual(202)
-        expect(await response.json()).toMatchObject({ status: 'warning', message: 'nothing-to-do' })
+        await fPut('authentication/request-multi-factor', { credential: 'email' })
+        expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
+        expect(fResponseBody).toMatchObject({ status: 'warning', message: 'nothing-to-do' })
       })
     })
 
@@ -65,17 +54,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({})
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({
-          status: 'failure',
-          message: 'request/credential was not provided and is not optional'
-        })
+        await fPut('authentication/request-multi-factor', {})
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'request/credential was not provided and is not optional' })
       })
     })
   })

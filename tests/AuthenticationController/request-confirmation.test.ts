@@ -1,6 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
@@ -34,14 +33,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email', credentialKind: 'email' })
-        })
-
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success' })
+        await fPut('authentication/request-confirmation', { credential: 'email', credentialKind: 'email' })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success' })
       })
     })
 
@@ -52,14 +46,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email', credentialKind: 'email' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'confirmation-disabled' })
+        await fPut('authentication/request-confirmation', { credential: 'email', credentialKind: 'email' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'confirmation-disabled' })
       })
     })
 
@@ -74,14 +63,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: 'email', credentialKind: 'nop' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({
+        await fPut('authentication/request-confirmation', { credential: 'email', credentialKind: 'nop' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({
           status: 'failure',
           message: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "nop" was given'
         })

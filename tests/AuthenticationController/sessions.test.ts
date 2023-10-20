@@ -1,6 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -29,21 +28,21 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        const response = await fetch(`http://localhost:${port}/authentication/sessions`, { headers: { 'Content-Type': 'application/json' } })
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toEqual({ status: 'success', sessions: {} })
+        await fGet('authentication/sessions')
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success', sessions: {} })
       })
     })
 
     describe('when no authenticatable is in session', (): void => {
-      it('returns forbidden', async (): Promise<void> => {
+      it('returns unauthorized', async (): Promise<void> => {
         app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
         app.on('request/error', console.log)
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/sessions`, { headers: { 'Content-Type': 'application/json' } })
-        expect(response.status).toEqual(401)
+        await fGet('authentication/sessions')
+        expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
       })
     })
   })

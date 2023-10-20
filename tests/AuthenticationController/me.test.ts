@@ -1,6 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -29,9 +28,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        const response = await fetch(`http://localhost:${port}/authentication/me`, { headers: { 'Content-Type': 'application/json' } })
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: {} })
+        await fGet('authentication/me')
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success', authenticatable: {} })
       })
     })
 
@@ -42,8 +41,8 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/me`, { headers: { 'Content-Type': 'application/json' } })
-        expect(response.status).toEqual(401)
+        await fGet('authentication/me')
+        expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
       })
     })
   })

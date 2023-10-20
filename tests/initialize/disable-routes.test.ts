@@ -1,5 +1,4 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
-import fetch from 'node-fetch'
 
 import { AuthenticationRoutes, initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -39,53 +38,53 @@ describe(initialize, (): void => {
       await app.prepare()
       await app.run()
 
-      let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, { method: 'patch' })
-      expect(response.status).toEqual(404)
+      await fPatch('authentication/connect-provider')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/continue-with-provider`, { method: 'post' })
-      expect(response.status).toEqual(404)
+      await fPost('authentication/continue-with-provider')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/invite`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/invite')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/log-in`, { method: 'post' })
-      expect(response.status).toEqual(404)
+      await fPost('authentication/log-in')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/request-confirmation`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/request-confirmation')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/request-corroboration`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/request-corroboration')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/request-multi-factor`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/request-multi-factor')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/request-password-reset`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/request-password-reset')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/sign-up`, { method: 'post' })
-      expect(response.status).toEqual(404)
+      await fPost('authentication/sign-up')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/update-authenticatable`, { method: 'patch' })
-      expect(response.status).toEqual(404)
+      await fPatch('authentication/update-authenticatable')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/update-credential`, { method: 'patch' })
-      expect(response.status).toEqual(404)
+      await fPatch('authentication/update-credential')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/verify-confirmation`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/verify-confirmation')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/verify-corroboration`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/verify-corroboration')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/verify-multi-factor`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/verify-multi-factor')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/verify-password-reset`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/verify-password-reset')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
 
-      response = await fetch(`http://localhost:${port}/authentication/verify-unlock`, { method: 'put' })
-      expect(response.status).toEqual(404)
+      await fPut('authentication/verify-unlock')
+      expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')
     })
   })
 })

@@ -1,6 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
@@ -39,14 +38,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'token' })
-        })
-
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: { universalId: 'any.nothing' } })
+        await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success', authenticatable: { universalId: 'any.nothing' } })
       })
     })
 
@@ -61,14 +55,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'error' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'provider-error' })
+        await fPatch('authentication/connect-provider', { provider: 'universal', token: 'error' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toEqual({ status: 'failure', message: 'provider-error' })
       })
     })
 
@@ -83,14 +72,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'token' })
-        })
-
-        expect(response.status).toEqual(202)
-        expect(await response.json()).toMatchObject({ status: 'warning', message: 'already-connected' })
+        await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
+        expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
+        expect(fResponseBody).toEqual({ status: 'warning', message: 'already-connected' })
       })
     })
 
@@ -105,14 +89,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'nop', token: 'token' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'unknown-provider' })
+        await fPatch('authentication/connect-provider', { provider: 'nop', token: 'token' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toEqual({ status: 'failure', message: 'unknown-provider' })
       })
     })
 
@@ -123,13 +102,8 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'universal', token: 'token' })
-        })
-
-        expect(response.status).toEqual(401)
+        await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
+        expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
       })
     })
 
@@ -144,14 +118,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/connect-provider`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ other: false })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/provider was not provided and is not optional' })
+        await fPatch('authentication/connect-provider', { other: false })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toEqual({ status: 'failure', message: 'request/provider was not provided and is not optional' })
       })
     })
   })

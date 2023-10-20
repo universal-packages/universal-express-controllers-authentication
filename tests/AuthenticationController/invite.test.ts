@@ -38,14 +38,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
-        })
-
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success' })
+        await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'email' })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success' })
       })
     })
 
@@ -60,14 +55,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'invitations-disabled' })
+        await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'email' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'invitations-disabled' })
       })
     })
 
@@ -78,13 +68,8 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'email' })
-        })
-
-        expect(response.status).toEqual(401)
+        await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'email' })
+        expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
       })
     })
 
@@ -99,14 +84,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/invite`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: "ma'man", credentialKind: 'other' })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({
+        await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'other' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({
           status: 'failure',
           message: 'request/credentialKind does not provide right enum value, valid enum values are [email, phone], "other" was given'
         })

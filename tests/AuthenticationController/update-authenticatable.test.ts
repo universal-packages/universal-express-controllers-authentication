@@ -1,6 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -29,14 +28,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/update-authenticatable`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ attributes: { username: 'new' } })
-        })
-
-        expect(response.status).toEqual(200)
-        expect(await response.json()).toMatchObject({ status: 'success', authenticatable: { username: 'new' } })
+        await fPatch('authentication/update-authenticatable', { attributes: { username: 'new' } })
+        expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toMatchObject({ status: 'success', authenticatable: { username: 'new' } })
       })
     })
 
@@ -51,14 +45,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/update-authenticatable`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ attributes: { password: 'new' } })
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
+        await fPatch('authentication/update-authenticatable', { attributes: { password: 'new' } })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
       })
     })
 
@@ -69,13 +58,8 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/update-authenticatable`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ attributes: { username: 'new' } })
-        })
-
-        expect(response.status).toEqual(401)
+        await fPatch('authentication/update-authenticatable', { attributes: { username: 'new' } })
+        expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
       })
     })
 
@@ -90,14 +74,9 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/update-authenticatable`, {
-          method: 'patch',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({})
-        })
-
-        expect(response.status).toEqual(400)
-        expect(await response.json()).toMatchObject({ status: 'failure', message: 'request/attributes was not provided and is not optional' })
+        await fPatch('authentication/update-authenticatable')
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'request/attributes was not provided and is not optional' })
       })
     })
   })

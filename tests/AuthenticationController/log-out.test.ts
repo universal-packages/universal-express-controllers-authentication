@@ -1,6 +1,5 @@
 import { ExpressApp } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
-import fetch from 'node-fetch'
 
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -29,11 +28,8 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/log-out`, {
-          method: 'delete',
-          headers: { 'Content-Type': 'application/json' }
-        })
-        expect(response.status).toEqual(200)
+        await fDelete('authentication/log-out')
+        expect(fResponse).toHaveReturnedWithStatus('OK')
       })
     })
 
@@ -44,11 +40,8 @@ describe('AuthenticationController', (): void => {
         await app.prepare()
         await app.run()
 
-        let response = await fetch(`http://localhost:${port}/authentication/log-out`, {
-          method: 'delete',
-          headers: { 'Content-Type': 'application/json' }
-        })
-        expect(response.status).toEqual(401)
+        await fDelete('authentication/log-out')
+        expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
       })
     })
   })
