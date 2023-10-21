@@ -1,14 +1,5 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
-
 import { AuthenticationRoutes, initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
-
-const port = 4000 + Number(process.env['JEST_WORKER_ID'])
-
-let app: ExpressApp
-afterEach(async (): Promise<void> => {
-  await app.stop()
-})
 
 describe(initialize, (): void => {
   describe('disable-routes', (): void => {
@@ -36,10 +27,7 @@ describe(initialize, (): void => {
         await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret', routes }, TestAuthenticatable)
       } catch {}
 
-      app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-      app.on('request/error', console.log)
-      await app.prepare()
-      await app.run()
+      await runExpressApp()
 
       await fPatch('authentication/connect-provider')
       expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')

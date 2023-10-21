@@ -1,16 +1,6 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
-import { NextFunction, Request, Response } from 'express'
-
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
-
-const port = 4000 + Number(process.env['JEST_WORKER_ID'])
-
-let app: ExpressApp
-afterEach(async (): Promise<void> => {
-  await app.stop()
-})
 
 beforeAll(async (): Promise<void> => {
   await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
@@ -28,10 +18,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns ok', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPut('authentication/request-corroboration', { credential: 'email', credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -41,10 +28,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when corroboration is not enabled', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPut('authentication/request-corroboration', { credential: 'email', credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -54,14 +38,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-unconfirmed')
-          next()
-        })
-        await app.prepare()
-        await app.run()
+        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPut('authentication/request-corroboration', { credential: 'email', credentialKind: 'nop' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

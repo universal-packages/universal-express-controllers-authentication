@@ -1,15 +1,6 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
-
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
-
-const port = 4000 + Number(process.env['JEST_WORKER_ID'])
-
-let app: ExpressApp
-afterEach(async (): Promise<void> => {
-  await app.stop()
-})
 
 beforeAll(async (): Promise<void> => {
   await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
@@ -19,10 +10,7 @@ describe('AuthenticationController', (): void => {
   describe('sign-up', (): void => {
     describe('when a successful signup happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/sign-up', {
           attributes: {
@@ -50,10 +38,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns bad request and message', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/sign-up', {
           attributes: {
@@ -83,10 +68,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns bad request and message', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/sign-up', {
           attributes: {
@@ -106,10 +88,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are passed', (): void => {
       it('returns bad request', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/sign-up', {})
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

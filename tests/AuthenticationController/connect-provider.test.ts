@@ -1,17 +1,7 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
-import { NextFunction, Request, Response } from 'express'
-
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
 import GetUniversalUserDataDynamic from '../__fixtures__/GetUniversalDataDynamic'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
-
-const port = 4000 + Number(process.env['JEST_WORKER_ID'])
-
-let app: ExpressApp
-afterEach(async (): Promise<void> => {
-  await app.stop()
-})
 
 beforeAll(async (): Promise<void> => {
   await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
@@ -29,14 +19,7 @@ describe('AuthenticationController', (): void => {
   describe('connect-provider', (): void => {
     describe('when a successful connection happens', (): void => {
       it('returns ok and the rendered authenticatable data', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
-          next()
-        })
-        await app.prepare()
-        await app.run()
+        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -46,14 +29,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when an error occurs when calling the provider', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-confirmed')
-          next()
-        })
-        await app.prepare()
-        await app.run()
+        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'error' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -63,14 +39,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the provider is already connected', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 'any.universal-connected')
-          next()
-        })
-        await app.prepare()
-        await app.run()
+        await runExpressApp(TestAuthenticatable.findByProviderId('universal', 'any.universal-connected'))
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
@@ -80,14 +49,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the provider does not exists', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 80085)
-          next()
-        })
-        await app.prepare()
-        await app.run()
+        await runExpressApp(TestAuthenticatable.findByProviderId('universal', 80085))
 
         await fPatch('authentication/connect-provider', { provider: 'nop', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -97,10 +59,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
       it('returns unauthorized', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
@@ -109,14 +68,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByProviderId('universal', 80085)
-          next()
-        })
-        await app.prepare()
-        await app.run()
+        await runExpressApp(TestAuthenticatable.findByProviderId('universal', 80085))
 
         await fPatch('authentication/connect-provider', { other: false })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

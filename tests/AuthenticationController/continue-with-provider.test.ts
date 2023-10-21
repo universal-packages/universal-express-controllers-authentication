@@ -1,16 +1,7 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
-
 import { initialize } from '../../src'
 import { CURRENT_AUTHENTICATION } from '../../src/initialize'
 import GetUniversalUserDataDynamic from '../__fixtures__/GetUniversalDataDynamic'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
-
-const port = 4000 + Number(process.env['JEST_WORKER_ID'])
-
-let app: ExpressApp
-afterEach(async (): Promise<void> => {
-  await app.stop()
-})
 
 beforeAll(async (): Promise<void> => {
   await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
@@ -28,10 +19,7 @@ describe('AuthenticationController', (): void => {
   describe('continue-with-provider', (): void => {
     describe('when a successful connection happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/continue-with-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -41,10 +29,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when an error occurs when calling the provider', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/continue-with-provider', { provider: 'universal', token: 'error' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -54,10 +39,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the provider does not exists', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/continue-with-provider', { provider: 'nop', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -67,10 +49,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPost('authentication/continue-with-provider', { other: false })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

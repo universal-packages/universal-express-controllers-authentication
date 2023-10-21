@@ -1,15 +1,5 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
-import { NextFunction, Request, Response } from 'express'
-
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
-
-const port = 4000 + Number(process.env['JEST_WORKER_ID'])
-
-let app: ExpressApp
-afterEach(async (): Promise<void> => {
-  await app.stop()
-})
 
 beforeAll(async (): Promise<void> => {
   await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
@@ -19,10 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('request-unlock', (): void => {
     describe('when the unlock request is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPut('authentication/request-unlock', { credential: 'email.locked' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -32,10 +19,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the authenticatable is not active for multi factor', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        await app.prepare()
-        await app.run()
+        await runExpressApp()
 
         await fPut('authentication/request-unlock', { credential: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
@@ -45,14 +29,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        app = new ExpressApp({ appLocation: './tests/__fixtures__/controllers', port })
-        app.on('request/error', console.log)
-        app.expressApp.use((request: Request, _response: Response, next: NextFunction) => {
-          request['authenticatable'] = TestAuthenticatable.findByCredential('email-unconfirmed')
-          next()
-        })
-        await app.prepare()
-        await app.run()
+        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPut('authentication/request-unlock')
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
