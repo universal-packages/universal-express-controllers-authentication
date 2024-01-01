@@ -5,6 +5,6 @@ import { AuthDynamicNames, SetSessionDeviceIdPayload } from '../types'
 @AuthDynamic<AuthDynamicNames>('set-session-device-id', true)
 export default class SetSessionDeviceIdDynamic {
   public async perform(_payload: SetSessionDeviceIdPayload, authentication: Authentication<AuthDynamicNames>): Promise<void> {
-    authentication.emit('warning', { dynamic: this.constructor.name, message: 'not implemented' })
+    authentication.emit('warning', { message: 'not implemented', payload: { dynamic: this.constructor.name } })
   }
 }
