@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@universal-packages/authentication": "^1.9.12",
-    "@universal-packages/express-controllers-parameters": "^1.1.18"
+    "@universal-packages/express-controllers-parameters": "^1.1.19"
   },
   "peerDependencies": {
     "@universal-packages/express-controllers": "^1.11.10"
