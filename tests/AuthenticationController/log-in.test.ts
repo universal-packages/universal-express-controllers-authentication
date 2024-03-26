@@ -10,7 +10,7 @@ describe('AuthenticationController', (): void => {
   describe('log-in', (): void => {
     describe('when a successful log in happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/log-in', { credential: 'email', password: 'password' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -20,7 +20,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the log in attempt fails', (): void => {
       it('returns bad request', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/log-in', { credential: 'email', password: 'nop' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -40,7 +40,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns accepted', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
         await fPost('authentication/log-in', { credential: 'email.unconfirmed', password: 'password' })
         expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
         expect(fResponseBody).toMatchObject({
@@ -56,7 +56,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are passed', (): void => {
       it('returns bad request', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/log-in')
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

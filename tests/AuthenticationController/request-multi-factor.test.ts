@@ -9,7 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('request-multi-factor', (): void => {
     describe('when the multi-factor request is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/request-multi-factor', { credential: 'email.multi-factor-active' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -19,7 +19,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the authenticatable is not active for multi factor', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/request-multi-factor', { credential: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
@@ -29,7 +29,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPut('authentication/request-multi-factor', {})
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

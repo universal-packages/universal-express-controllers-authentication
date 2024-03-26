@@ -19,7 +19,7 @@ describe('AuthenticationController', (): void => {
   describe('continue-with-provider', (): void => {
     describe('when a successful connection happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/continue-with-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -29,7 +29,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when an error occurs when calling the provider', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/continue-with-provider', { provider: 'universal', token: 'error' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -39,7 +39,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the provider does not exists', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/continue-with-provider', { provider: 'nop', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -49,7 +49,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/continue-with-provider', { other: false })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

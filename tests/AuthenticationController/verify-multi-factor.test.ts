@@ -10,7 +10,7 @@ describe('AuthenticationController', (): void => {
   describe('verify-multi-factor', (): void => {
     describe('when the multi-factor verification is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         const oneTimePassword = CURRENT_AUTHENTICATION.instance.performDynamicSync('generate-one-time-password', {
           concern: 'multi-factor',
@@ -25,7 +25,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the verification fails', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/verify-multi-factor', { credential: 'email.multi-factor-active', oneTimePassword: 'nop' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -35,7 +35,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/verify-multi-factor')
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

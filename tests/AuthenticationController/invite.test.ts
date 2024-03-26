@@ -18,7 +18,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns ok', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -28,7 +28,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when invitations are not enabled', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -38,7 +38,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
       it('returns unauthorized', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
@@ -47,7 +47,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPut('authentication/invite', { credential: "ma'man", credentialKind: 'other' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

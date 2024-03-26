@@ -19,7 +19,7 @@ describe('AuthenticationController', (): void => {
   describe('connect-provider', (): void => {
     describe('when a successful connection happens', (): void => {
       it('returns ok and the rendered authenticatable data', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -29,7 +29,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when an error occurs when calling the provider', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'error' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -39,7 +39,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the provider is already connected', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByProviderId('universal', 'any.universal-connected'))
+        await runExpressControllers(TestAuthenticatable.findByProviderId('universal', 'any.universal-connected'))
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
@@ -49,7 +49,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the provider does not exists', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByProviderId('universal', 80085))
+        await runExpressControllers(TestAuthenticatable.findByProviderId('universal', 80085))
 
         await fPatch('authentication/connect-provider', { provider: 'nop', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -59,7 +59,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
       it('returns unauthorized', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPatch('authentication/connect-provider', { provider: 'universal', token: 'token' })
         expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
@@ -68,7 +68,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByProviderId('universal', 80085))
+        await runExpressControllers(TestAuthenticatable.findByProviderId('universal', 80085))
 
         await fPatch('authentication/connect-provider', { other: false })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

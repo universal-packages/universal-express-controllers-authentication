@@ -1,4 +1,4 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
+import { ExpressControllers } from '@universal-packages/express-controllers'
 
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -11,7 +11,7 @@ describe('AuthenticationController', (): void => {
   describe('sessions', (): void => {
     describe('when an authenticatable is in session', (): void => {
       it('returns ok and renders the sessions', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fGet('authentication/sessions')
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -21,7 +21,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when no authenticatable is in session', (): void => {
       it('returns unauthorized', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fGet('authentication/sessions')
         expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')

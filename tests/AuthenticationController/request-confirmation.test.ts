@@ -18,7 +18,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns ok', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/request-confirmation', { credential: 'email', credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -28,7 +28,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when confirmations are not enabled', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/request-confirmation', { credential: 'email', credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -38,7 +38,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPut('authentication/request-confirmation', { credential: 'email', credentialKind: 'nop' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

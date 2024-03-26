@@ -9,7 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('update-credential', (): void => {
     describe('when a successful update happens', (): void => {
       it('returns ok and the rendered authenticatable data', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPatch('authentication/update-credential', { credential: 'new@email.com', credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -19,7 +19,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when credential is not valid', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPatch('authentication/update-credential', { credential: 'new', credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -29,7 +29,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
       it('returns unauthorized', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPatch('authentication/update-credential', { credential: 'new', credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')
@@ -38,7 +38,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fPatch('authentication/update-credential', { credentialKind: 'email' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

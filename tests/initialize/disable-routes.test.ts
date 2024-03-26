@@ -27,7 +27,7 @@ describe(initialize, (): void => {
         await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret', routes }, TestAuthenticatable)
       } catch {}
 
-      await runExpressApp()
+      await runExpressControllers()
 
       await fPatch('authentication/connect-provider')
       expect(fResponse).toHaveReturnedWithStatus('NOT_FOUND')

@@ -1,4 +1,4 @@
-import './runExpressApp'
+import './runExpressControllers'
 
 // node > 19 has some issues with fetch closing sockets on consecutive requests
 if (process.env.CI || process.versions.node.startsWith('20')) {

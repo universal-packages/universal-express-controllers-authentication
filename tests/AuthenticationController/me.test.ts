@@ -9,7 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('me', (): void => {
     describe('when an authenticatable is in session', (): void => {
       it('returns ok and renders the user', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fGet('authentication/me')
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -19,7 +19,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when no authenticatable is in session', (): void => {
       it('returns forbidden', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fGet('authentication/me')
         expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')

@@ -10,7 +10,7 @@ describe('AuthenticationController', (): void => {
   describe('verify-unlock', (): void => {
     describe('when the unlock verification is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         const oneTimePassword = CURRENT_AUTHENTICATION.instance.performDynamicSync('generate-one-time-password', {
           concern: 'unlock',
@@ -25,7 +25,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when the verification fails', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/verify-unlock', { credential: 'email.unlock-active', oneTimePassword: 'nop' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
@@ -35,7 +35,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPut('authentication/verify-unlock')
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

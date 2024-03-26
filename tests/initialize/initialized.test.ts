@@ -1,4 +1,4 @@
-import { ExpressApp } from '@universal-packages/express-controllers'
+import { ExpressControllers } from '@universal-packages/express-controllers'
 
 import { initialize } from '../../src'
 import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
@@ -7,7 +7,7 @@ describe(initialize, (): void => {
   describe('disable-routes', (): void => {
     it('disable routes if configured', async (): Promise<void> => {
       // Just to check controller registration when no initialization has taken place
-      await runExpressApp()
+      await runExpressControllers()
 
       await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
 

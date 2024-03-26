@@ -27,7 +27,7 @@ describe(initialize, (): void => {
         await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret', routes, rootPath: '/custom' }, TestAuthenticatable)
       } catch {}
 
-      await runExpressApp()
+      await runExpressControllers()
 
       await fPatch('/custom/change1')
       expect(fResponse).not.toHaveReturnedWithStatus('NOT_FOUND')

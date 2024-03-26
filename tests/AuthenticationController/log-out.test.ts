@@ -9,7 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('log-out', (): void => {
     describe('when a successful log out happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        await runExpressApp(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
 
         await fDelete('authentication/log-out')
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -18,7 +18,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when no authenticatable is in session', (): void => {
       it('returns forbidden', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fDelete('authentication/log-out')
         expect(fResponse).toHaveReturnedWithStatus('UNAUTHORIZED')

@@ -10,7 +10,7 @@ describe('AuthenticationController', (): void => {
   describe('sign-up', (): void => {
     describe('when a successful signup happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/sign-up', {
           attributes: {
@@ -38,7 +38,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns bad request and message', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/sign-up', {
           attributes: {
@@ -68,7 +68,7 @@ describe('AuthenticationController', (): void => {
       })
 
       it('returns bad request and message', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/sign-up', {
           attributes: {
@@ -88,7 +88,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are passed', (): void => {
       it('returns bad request', async (): Promise<void> => {
-        await runExpressApp()
+        await runExpressControllers()
 
         await fPost('authentication/sign-up', {})
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
