@@ -9,7 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('update-device-id', (): void => {
     describe('when an authenticatable is in session', (): void => {
       it('returns ok and sets the device id', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.fromId(99))
 
         await fPatch('authentication/update-device-id', { deviceId: 'my-device-id' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -28,7 +28,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad params are passed', (): void => {
       it('returns bad request', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.fromId(99))
 
         await fPatch('authentication/update-device-id')
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')

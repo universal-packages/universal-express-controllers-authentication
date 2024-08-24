@@ -11,19 +11,19 @@
 ```shell
 npm install @universal-packages/express-controllers-authentication
 
-npm install @universal-packages/express-controllers-parameters
 npm install @universal-packages/express-controllers
-npm install express
 ```
 
 ## Global methods
+
 #### **`initialize(options: Object, [authenticatableClass: AuthenticatableClass])`**
 
 Initialize the authentication api and the authentication controller to prepare routing configuration before the `ExpressControllers` runs. The authentication controller is loaded automatically by `ExpressControllers`.
 
 ```js
-import { initialize } from '@universal-packages/express-controllers-authentication'
 import { ExpressControllers } from '@universal-packages/express-controllers'
+import { initialize } from '@universal-packages/express-controllers-authentication'
+
 import User from './User'
 
 await initialize({ secret: 'my-secret' }, User)
@@ -43,154 +43,10 @@ Additionally takes the following ones:
 
 - **`rootPath`** `String` `default: /authentication`
   You can set the root of all authentication routes, ex: `/auth/<action>`
-- **`routes`**
-  - **`connectProvider`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: connect-provider`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PATCH`
-      Lets customize the method to access this action
-  - **`continueWithProvider`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: continue-with-provider`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: POST`
-      Lets customize the method to access this action
-  - **`invite`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: invite`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`logIn`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: log-in`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: POST`
-      Lets customize the method to access this action
-  - **`logOut`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: log-in`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: DELETE`
-      Lets customize the method to access this action
-  - **`me`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: log-in`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: GET`
-      Lets customize the method to access this action
-  - **`requestConfirmation`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: request-confirmation`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`requestCorroboration`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: request-corroboration`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`requestMultiFactor`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: request-multi-factor`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`requestPasswordReset`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: request-password-reset`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`requestUnlock`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: request-multi-factor`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`sessions`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: log-in`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: GET`
-      Lets customize the method to access this action
-  - **`signUp`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: sign-up`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: POST`
-      Lets customize the method to access this action
-  - **`updateAuthenticatable`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: update-authenticatable`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PATCH`
-      Lets customize the method to access this action
-  - **`updateCredential`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: update-credential`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PATCH`
-      Lets customize the method to access this action
-  - **`updateSessionDeviceId`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PATCH`
-      Lets customize the method to access this action
-  - **`verifyConfirmation`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: verify-confirmation`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`verifyCorroboration`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: verify-corroboration`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`verifyMultiFactor`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: verify-multi-factor`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`verifyPasswordReset`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: verify-password-reset`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
-  - **`verifyUnlock`**
-    - **`enable`** `Boolean` `default: true`
-      Enables the controller to expose this action
-    - **`path`** `String` `default: verify-unlock`
-      Enables the customization of the route for this action
-    - **`method`** `HTTPVerb` `default: PUT`
-      Lets customize the method to access this action
+
+## Authentication Modules
+
+Enabled authentication modules that provide a controllers will be enabled in express controllers if they are enabled in the authentication api. For example the default module provided by `universal-authentication` is enabled by default.
 
 ## Typescript
 

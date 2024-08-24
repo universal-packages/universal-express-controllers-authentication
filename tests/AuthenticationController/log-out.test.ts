@@ -9,7 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('log-out', (): void => {
     describe('when a successful log out happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.fromId(99))
 
         await fDelete('authentication/log-out')
         expect(fResponse).toHaveReturnedWithStatus('OK')

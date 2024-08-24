@@ -5,12 +5,14 @@ beforeAll(async (): Promise<void> => {
   await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
 })
 
-describe('AuthenticationController', (): void => {
+describe('DefaultModuleController', (): void => {
   describe('request-password-reset', (): void => {
     describe('when the password-reset request is successful', (): void => {
       it('returns ok', async (): Promise<void> => {
         await runExpressControllers()
-        await fPut('authentication/request-password-reset', { credential: 'email' })
+
+        await fPut('authentication/request-password-reset', { email: 'email' })
+
         expect(fResponse).toHaveReturnedWithStatus('OK')
         expect(fResponseBody).toMatchObject({ status: 'success' })
       })
@@ -20,7 +22,8 @@ describe('AuthenticationController', (): void => {
       it('returns fail', async (): Promise<void> => {
         await runExpressControllers()
 
-        await fPut('authentication/request-password-reset', { credential: 'email.nothing' })
+        await fPut('authentication/request-password-reset', { email: 'invalid' })
+
         expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
         expect(fResponseBody).toMatchObject({ status: 'warning', message: 'nothing-to-do' })
       })
@@ -28,13 +31,14 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.fromId(99))
 
         await fPut('authentication/request-password-reset')
+
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
         expect(fResponseBody).toMatchObject({
           status: 'failure',
-          message: 'request/credential was not provided and is not optional'
+          message: 'request/email was not provided and is not optional'
         })
       })
     })

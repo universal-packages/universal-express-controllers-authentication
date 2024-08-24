@@ -11,7 +11,7 @@ describe('AuthenticationController', (): void => {
   describe('sessions', (): void => {
     describe('when an authenticatable is in session', (): void => {
       it('returns ok and renders the sessions', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.fromId(99))
 
         await fGet('authentication/sessions')
         expect(fResponse).toHaveReturnedWithStatus('OK')

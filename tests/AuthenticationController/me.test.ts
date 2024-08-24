@@ -9,7 +9,7 @@ describe('AuthenticationController', (): void => {
   describe('me', (): void => {
     describe('when an authenticatable is in session', (): void => {
       it('returns ok and renders the user', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.findByCredential('email-confirmed'))
+        await runExpressControllers(TestAuthenticatable.fromId(99))
 
         await fGet('authentication/me')
         expect(fResponse).toHaveReturnedWithStatus('OK')
