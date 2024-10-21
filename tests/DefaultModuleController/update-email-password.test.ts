@@ -36,7 +36,7 @@ describe('DefaultModuleController', (): void => {
       })
     })
 
-    describe.only('all parameters are optional', (): void => {
+    describe('all parameters are optional', (): void => {
       it('returns successful', async (): Promise<void> => {
         await runExpressControllers(TestAuthenticatable.fromId(99))
 

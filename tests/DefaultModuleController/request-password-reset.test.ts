@@ -14,7 +14,6 @@ describe('DefaultModuleController', (): void => {
         await fPut('authentication/request-password-reset', { email: 'email' })
 
         expect(fResponse).toHaveReturnedWithStatus('OK')
-        expect(fResponseBody).toMatchObject({ status: 'success' })
       })
     })
 
@@ -25,7 +24,6 @@ describe('DefaultModuleController', (): void => {
         await fPut('authentication/request-password-reset', { email: 'invalid' })
 
         expect(fResponse).toHaveReturnedWithStatus('ACCEPTED')
-        expect(fResponseBody).toMatchObject({ status: 'warning', message: 'nothing-to-do' })
       })
     })
 

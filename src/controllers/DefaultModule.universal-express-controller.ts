@@ -50,10 +50,10 @@ export default class DefaultModuleController extends BaseController {
 
     switch (result.status) {
       case 'warning':
-        this.status('ACCEPTED').json(result)
+        this.status('ACCEPTED')
         break
       case 'success':
-        this.json(result)
+        this.status('OK')
     }
   }
 
