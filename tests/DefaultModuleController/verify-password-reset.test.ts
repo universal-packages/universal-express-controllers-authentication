@@ -1,9 +1,10 @@
+import VerifyOneTimePassword from '@universal-packages/authentication/VerifyOneTimePassword.universal-auth-dynamic'
+import UserFromEmailDynamic from '@universal-packages/authentication/default-module/UserFromEmail.universal-auth-dynamic'
+
 import { initialize } from '../../src'
-import { CURRENT_AUTHENTICATION } from '../../src/initialize'
-import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 beforeAll(async (): Promise<void> => {
-  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
+  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' })
 })
 
 describe('DefaultModuleController', (): void => {
@@ -12,29 +13,37 @@ describe('DefaultModuleController', (): void => {
       it('returns ok', async (): Promise<void> => {
         await runExpressControllers()
 
-        const oneTimePassword = CURRENT_AUTHENTICATION.instance.performDynamicSync('generate-one-time-password', {
-          concern: 'password-reset',
-          identifier: 'email'
-        })
+        dynamicApiJest.mockDynamicReturnValue(VerifyOneTimePassword, true)
+        dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, { id: 99, email: 'david@universal-packages.com' })
 
-        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword, password: 'new-password' })
+        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123, password: 'new-password' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
-        expect(fResponseBody).toMatchObject({ status: 'success' })
+        expect(fResponseBody).toEqual({ status: 'success', user: { id: 99, email: 'david@universal-packages.com' } })
       })
     })
 
-    describe('when the verification fails', (): void => {
+    describe('when the otp verification fails', (): void => {
       it('returns fail', async (): Promise<void> => {
         await runExpressControllers()
 
-        const oneTimePassword = CURRENT_AUTHENTICATION.instance.performDynamicSync('generate-one-time-password', {
-          concern: 'password-reset',
-          identifier: 'email'
-        })
+        dynamicApiJest.mockDynamicReturnValue(VerifyOneTimePassword, false)
 
-        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword, password: 'short' })
+        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123, password: 'short' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
-        expect(fResponseBody).toMatchObject({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
+        expect(fResponseBody).toEqual({ status: 'failure', message: 'invalid-one-time-password' })
+      })
+    })
+
+    describe('when the validation fails', (): void => {
+      it('returns fail', async (): Promise<void> => {
+        await runExpressControllers()
+
+        dynamicApiJest.mockDynamicReturnValue(VerifyOneTimePassword, true)
+        dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, { id: 99, email: 'david@universal-packages.com' })
+
+        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123, password: 'short' })
+        expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
+        expect(fResponseBody).toEqual({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
       })
     })
 
@@ -44,7 +53,7 @@ describe('DefaultModuleController', (): void => {
 
         await fPut('authentication/verify-password-reset')
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
-        expect(fResponseBody).toMatchObject({ status: 'failure', message: 'request/email was not provided and is not optional' })
+        expect(fResponseBody).toEqual({ status: 'failure', message: 'request/email was not provided and is not optional' })
       })
     })
   })

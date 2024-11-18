@@ -7,10 +7,10 @@ import { CURRENT_AUTHENTICATION } from '../initialize'
 export default class AuthenticationController extends BaseController {
   @RegisterAuthenticationAction('DELETE', 'log-out')
   public async logOut(): Promise<any> {
-    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+    const user = await CURRENT_AUTHENTICATION.instance.performDynamic('user-from-request', { request: this.request })
 
-    if (authenticatable) {
-      await CURRENT_AUTHENTICATION.instance.performDynamic('unset-session', { request: this.request, authenticatable, sessionId: this.request.query.sessionId as string })
+    if (user) {
+      await CURRENT_AUTHENTICATION.instance.performDynamic('unset-session', { request: this.request, user, sessionId: this.request.query.sessionId as string })
     } else {
       this.status('UNAUTHORIZED')
     }
@@ -18,23 +18,23 @@ export default class AuthenticationController extends BaseController {
 
   @RegisterAuthenticationAction('GET', 'me')
   public async me(): Promise<any> {
-    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+    const user = await CURRENT_AUTHENTICATION.instance.performDynamic('user-from-request', { request: this.request })
 
-    if (authenticatable) {
-      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: authenticatable })
+    if (user) {
+      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-user', { user })
 
-      this.json({ status: 'success', authenticatable: rendered })
+      this.json({ status: 'success', user: rendered })
     } else {
       this.status('UNAUTHORIZED')
     }
   }
 
   @RegisterAuthenticationAction('GET', 'sessions')
-  public async session(): Promise<any> {
-    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+  public async sessions(): Promise<any> {
+    const user = await CURRENT_AUTHENTICATION.instance.performDynamic('user-from-request', { request: this.request })
 
-    if (authenticatable) {
-      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-sessions', { authenticatable: authenticatable, request: this.request })
+    if (user) {
+      const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-sessions', { user, request: this.request })
 
       this.json({ status: 'success', sessions: rendered })
     } else {
@@ -44,9 +44,9 @@ export default class AuthenticationController extends BaseController {
 
   @RegisterAuthenticationAction('PATCH', 'update-device-id')
   public async updateDeviceId(): Promise<any> {
-    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+    const user = await CURRENT_AUTHENTICATION.instance.performDynamic('user-from-request', { request: this.request })
 
-    if (authenticatable) {
+    if (user) {
       let parameters: { deviceId: string }
 
       try {
@@ -55,7 +55,7 @@ export default class AuthenticationController extends BaseController {
         return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
       }
 
-      await CURRENT_AUTHENTICATION.instance.performDynamic('set-session-device-id', { authenticatable, request: this.request, deviceId: parameters.deviceId })
+      await CURRENT_AUTHENTICATION.instance.performDynamic('set-session-device-id', { user, request: this.request, deviceId: parameters.deviceId })
 
       this.json({ status: 'success' })
     } else {

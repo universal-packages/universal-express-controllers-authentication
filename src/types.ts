@@ -1,4 +1,4 @@
-import { AuthDynamicNames as AN, Authenticatable, Authentication, AuthenticationOptions } from '@universal-packages/authentication'
+import { Authentication, AuthenticationOptions, DefaultModuleDynamicNames, UserPayload } from '@universal-packages/authentication'
 import { Parameters } from '@universal-packages/parameters'
 import { Request, Response } from 'express'
 
@@ -7,40 +7,36 @@ export interface ExpressControllerAuthenticationOptions extends AuthenticationOp
 }
 
 export interface CurrentAuthentication {
-  instance: Authentication<AuthDynamicNames>
+  instance: Authentication<ExpressControllersAuthDynamicNames>
   options: ExpressControllerAuthenticationOptions
 }
 
-export interface AuthDynamicNames extends AN {
-  'authenticatable-from-request': { payload: AuthenticatableFromRequestPayload; result: Authenticatable }
-  'render-authenticatable': { payload: RenderAuthenticatablePayload; result: Record<string, any> }
-  'render-sessions': { payload: RenderSessionsPayload; result: Record<string, any> }
-  'set-session': { payload: SetSessionPayload; result: string }
-  'set-session-device-id': { payload: SetSessionDeviceIdPayload; result: void }
-  'unset-session': { payload: UnsetSessionPayload; result: void }
+export interface ExpressControllersAuthDynamicNames<U = Record<string, any>> extends DefaultModuleDynamicNames<U> {
+  'user-from-request': { payload: UserFromRequestPayload; result: U }
+  'render-user': { payload: UserPayload<U>; result: Record<string, any> }
+  'render-sessions': { payload: RenderSessionsPayload<U>; result: Record<string, any> }
+  'set-session': { payload: SetSessionPayload<U>; result: string }
+  'set-session-device-id': { payload: SetSessionDeviceIdPayload<U>; result: void }
+  'unset-session': { payload: UnsetSessionPayload<U>; result: void }
 }
 
-export interface AuthenticatableFromRequestPayload {
+export interface UserFromRequestPayload {
   request: Request
 }
 
-export interface RenderAuthenticatablePayload {
-  authenticatable: Authenticatable
-}
-
-export interface RenderSessionsPayload {
-  authenticatable: Authenticatable
+export interface RenderSessionsPayload<U = Record<string, any>> {
+  user: U
   request: Request
 }
 
-export interface SetSessionPayload {
-  authenticatable: Authenticatable
+export interface SetSessionPayload<U = Record<string, any>> {
+  user: U
   request: Request
   response: Response
 }
 
-export interface SetSessionDeviceIdPayload {
-  authenticatable: Authenticatable
+export interface SetSessionDeviceIdPayload<U = Record<string, any>> {
+  user: U
   request: Request
   deviceId: string
 }
@@ -49,12 +45,12 @@ export interface ShapeSignUpParametersPayload {
   parameters: Parameters
 }
 
-export interface ShapeUpdateAuthenticatableParametersPayload {
+export interface ShapeUpdateUserParametersPayload {
   parameters: Parameters
 }
 
-export interface UnsetSessionPayload {
-  authenticatable: Authenticatable
+export interface UnsetSessionPayload<U = Record<string, any>> {
+  user: U
   request: Request
   sessionId?: string
 }

@@ -1,19 +1,18 @@
-import { Authenticatable } from '@universal-packages/authentication'
 import { ExpressControllers } from '@universal-packages/express-controllers'
 import { NextFunction, Request, Response } from 'express'
 
 let expressControllers: ExpressControllers
 
 declare global {
-  function runExpressControllers(authenticatable?: Authenticatable, debugError?: boolean): Promise<ExpressControllers>
+  function runExpressControllers(user?: Record<string, any>, debugError?: boolean): Promise<ExpressControllers>
 }
 
-global.runExpressControllers = async function runExpressControllers(authenticatable?: Authenticatable, debugError?: boolean): Promise<ExpressControllers> {
+global.runExpressControllers = async function runExpressControllers(user?: Record<string, any>, debugError?: boolean): Promise<ExpressControllers> {
   expressControllers = new ExpressControllers({ appLocation: './tests/__fixtures__', port: fDefaultPort })
 
-  if (authenticatable) {
+  if (user) {
     expressControllers.expressControllers.use((request: Request, _response: Response, next: NextFunction) => {
-      request['authenticatable'] = authenticatable
+      request['user'] = user
       next()
     })
   }

@@ -1,10 +1,10 @@
 import { AuthDynamic, Authentication } from '@universal-packages/authentication'
 
-import { AuthDynamicNames, SetSessionPayload } from '../types'
+import { ExpressControllersAuthDynamicNames, SetSessionPayload } from '../types'
 
-@AuthDynamic<AuthDynamicNames>('set-session', true)
+@AuthDynamic<ExpressControllersAuthDynamicNames>('set-session', true)
 export default class SetSessionDynamic {
-  public async perform(_payload: SetSessionPayload, authentication: Authentication<AuthDynamicNames>): Promise<string> {
+  public async perform(_payload: SetSessionPayload, authentication: Authentication<ExpressControllersAuthDynamicNames>): Promise<string> {
     authentication.emit('warning', { message: 'not implemented', payload: { dynamic: this.constructor.name } })
 
     return ''

@@ -16,7 +16,7 @@ npm install @universal-packages/express-controllers
 
 ## Global methods
 
-#### **`initialize(options: Object, [authenticatableClass: AuthenticatableClass])`**
+#### **`initialize(options: Object)`**
 
 Initialize the authentication api and the authentication controller to prepare routing configuration before the `ExpressControllers` runs. The authentication controller is loaded automatically by `ExpressControllers`.
 
@@ -24,9 +24,7 @@ Initialize the authentication api and the authentication controller to prepare r
 import { ExpressControllers } from '@universal-packages/express-controllers'
 import { initialize } from '@universal-packages/express-controllers-authentication'
 
-import User from './User'
-
-await initialize({ secret: 'my-secret' }, User)
+await initialize({ secret: 'my-secret' })
 
 const app = new ExpressControllers({ port: 3000 })
 await app.prepare()

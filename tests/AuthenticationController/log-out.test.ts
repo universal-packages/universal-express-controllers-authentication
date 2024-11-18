@@ -1,22 +1,21 @@
 import { initialize } from '../../src'
-import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 beforeAll(async (): Promise<void> => {
-  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
+  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' })
 })
 
 describe('AuthenticationController', (): void => {
   describe('log-out', (): void => {
     describe('when a successful log out happens', (): void => {
       it('returns ok and the rendered session data', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.fromId(99))
+        await runExpressControllers({ id: 99, email: 'david@universal-packages.com' })
 
         await fDelete('authentication/log-out')
         expect(fResponse).toHaveReturnedWithStatus('OK')
       })
     })
 
-    describe('when no authenticatable is in session', (): void => {
+    describe('when no user is in session', (): void => {
       it('returns forbidden', async (): Promise<void> => {
         await runExpressControllers()
 

@@ -1,8 +1,9 @@
+import UserFromEmailDynamic from '@universal-packages/authentication/default-module/UserFromEmail.universal-auth-dynamic'
+
 import { initialize } from '../../src'
-import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 beforeAll(async (): Promise<void> => {
-  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
+  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' })
 })
 
 describe('DefaultModuleController', (): void => {
@@ -11,15 +12,19 @@ describe('DefaultModuleController', (): void => {
       it('returns ok', async (): Promise<void> => {
         await runExpressControllers()
 
+        dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, { id: 99, email: 'david@universal-packages.com' })
+
         await fPut('authentication/request-password-reset', { email: 'email' })
 
         expect(fResponse).toHaveReturnedWithStatus('OK')
       })
     })
 
-    describe('when no authenticatable can be match with the credential', (): void => {
+    describe('when no user can be match with the credential', (): void => {
       it('returns fail', async (): Promise<void> => {
         await runExpressControllers()
+
+        dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, null)
 
         await fPut('authentication/request-password-reset', { email: 'invalid' })
 
@@ -29,12 +34,12 @@ describe('DefaultModuleController', (): void => {
 
     describe('when bad parameters are present', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.fromId(99))
+        await runExpressControllers()
 
         await fPut('authentication/request-password-reset')
 
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
-        expect(fResponseBody).toMatchObject({
+        expect(fResponseBody).toEqual({
           status: 'failure',
           message: 'request/email was not provided and is not optional'
         })

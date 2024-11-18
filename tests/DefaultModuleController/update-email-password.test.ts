@@ -1,33 +1,38 @@
+import UserFromEmailDynamic from '@universal-packages/authentication/default-module/UserFromEmail.universal-auth-dynamic'
+
 import { initialize } from '../../src'
-import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 beforeAll(async (): Promise<void> => {
-  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
+  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' })
 })
 
 describe('DefaultModuleController', (): void => {
   describe('update-email-password', (): void => {
     describe('when a successful update happens', (): void => {
-      it('returns ok and the rendered authenticatable data', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.fromId(99))
+      it('returns ok and the rendered user data', async (): Promise<void> => {
+        const user = { id: 99, email: 'david@universal-packages.com' }
+        await runExpressControllers(user)
+
+        dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, user)
 
         await fPatch('authentication/update-email-password', { email: 'new@email.com' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
-        expect(fResponseBody).toMatchObject({ status: 'success', authenticatable: { email: 'new@email.com' } })
+        expect(fResponseBody).toEqual({ status: 'success', user })
       })
     })
 
     describe('when attributes are not valid', (): void => {
       it('returns fail', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.fromId(99))
+        const user = { id: 99, email: 'david@universal-packages.com' }
+        await runExpressControllers(user)
 
         await fPatch('authentication/update-email-password', { password: 'new' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
-        expect(fResponseBody).toMatchObject({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
+        expect(fResponseBody).toEqual({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
       })
     })
 
-    describe('when the authenticatable can not be extracted from request (not logged in)', (): void => {
+    describe('when the user can not be extracted from request (not logged in)', (): void => {
       it('returns unauthorized', async (): Promise<void> => {
         await runExpressControllers()
 
@@ -38,11 +43,14 @@ describe('DefaultModuleController', (): void => {
 
     describe('all parameters are optional', (): void => {
       it('returns successful', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.fromId(99))
+        const user = { id: 99, email: 'david@universal-packages.com' }
+        await runExpressControllers(user)
+
+        dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, user)
 
         await fPatch('authentication/update-email-password', { email: undefined })
         expect(fResponse).toHaveReturnedWithStatus('OK')
-        expect(fResponseBody).toMatchObject({ status: 'success' })
+        expect(fResponseBody).toEqual({ status: 'success', user })
       })
     })
   })

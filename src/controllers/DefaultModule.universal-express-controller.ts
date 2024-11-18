@@ -1,4 +1,11 @@
-import { EmailPasswordOneTimePasswordPayload, EmailPasswordPayload, EmailPayload, UpdateEmailPasswordPayload } from '@universal-packages/authentication'
+import {
+  Authentication,
+  DefaultModuleDynamicNames,
+  EmailPasswordOneTimePasswordPayload,
+  EmailPasswordPayload,
+  EmailPayload,
+  UpdateEmailPasswordPayload
+} from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 
 import { RegisterAuthenticationController, RegisterAuthenticationModuleAction } from '../decorators'
@@ -26,12 +33,12 @@ export default class DefaultModuleController extends BaseController {
         const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
           request: this.request,
           response: this.response,
-          authenticatable: result.authenticatable
+          user: result.user
         })
 
-        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-user', { user: result.user })
 
-        this.json({ status: 'success', authenticatable: rendered, sessionToken })
+        this.json({ status: 'success', user: rendered, sessionToken })
         break
     }
   }
@@ -77,21 +84,21 @@ export default class DefaultModuleController extends BaseController {
         const sessionToken = await CURRENT_AUTHENTICATION.instance.performDynamic('set-session', {
           request: this.request,
           response: this.response,
-          authenticatable: result.authenticatable
+          user: result.user
         })
 
-        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
+        const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-user', { user: result.user })
 
-        this.json({ status: 'success', authenticatable: rendered, sessionToken })
+        this.json({ status: 'success', user: rendered, sessionToken })
         break
     }
   }
 
   @RegisterAuthenticationModuleAction('default', 'PATCH', 'update-email-password')
   public async updateEmailPassword(): Promise<any> {
-    const authenticatable = await CURRENT_AUTHENTICATION.instance.performDynamic('authenticatable-from-request', { request: this.request })
+    const user = await CURRENT_AUTHENTICATION.instance.performDynamic('user-from-request', { request: this.request })
 
-    if (authenticatable) {
+    if (user) {
       let parameters: UpdateEmailPasswordPayload
 
       try {
@@ -100,16 +107,16 @@ export default class DefaultModuleController extends BaseController {
         return this.status('BAD_REQUEST').json({ status: 'failure', message: error.message })
       }
 
-      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('update-email-password', { authenticatable, ...parameters })
+      const result = await CURRENT_AUTHENTICATION.instance.performDynamic('update-email-password', { user, ...parameters })
 
       switch (result.status) {
         case 'failure':
           this.status('BAD_REQUEST').json(result)
           break
         case 'success':
-          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-authenticatable', { authenticatable: result.authenticatable })
+          const rendered = await CURRENT_AUTHENTICATION.instance.performDynamic('render-user', { user: result.user })
 
-          this.json({ status: 'success', authenticatable: rendered })
+          this.json({ status: 'success', user: rendered })
           break
       }
     } else {

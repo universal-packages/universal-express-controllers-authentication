@@ -1,15 +1,14 @@
 import { initialize } from '../../src'
-import TestAuthenticatable from '../__fixtures__/TestAuthenticatable'
 
 beforeAll(async (): Promise<void> => {
-  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' }, TestAuthenticatable)
+  await initialize({ dynamicsLocation: './tests/__fixtures__/dynamics', secret: 'my-secret' })
 })
 
 describe('AuthenticationController', (): void => {
   describe('update-device-id', (): void => {
-    describe('when an authenticatable is in session', (): void => {
+    describe('when an user is in session', (): void => {
       it('returns ok and sets the device id', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.fromId(99))
+        await runExpressControllers({ id: 99, email: 'david@universal-packages.com' })
 
         await fPatch('authentication/update-device-id', { deviceId: 'my-device-id' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -17,7 +16,7 @@ describe('AuthenticationController', (): void => {
       })
     })
 
-    describe('when no authenticatable is in session', (): void => {
+    describe('when no user is in session', (): void => {
       it('returns forbidden', async (): Promise<void> => {
         await runExpressControllers()
 
@@ -28,7 +27,7 @@ describe('AuthenticationController', (): void => {
 
     describe('when bad params are passed', (): void => {
       it('returns bad request', async (): Promise<void> => {
-        await runExpressControllers(TestAuthenticatable.fromId(99))
+        await runExpressControllers({ id: 99, email: 'david@universal-packages.com' })
 
         await fPatch('authentication/update-device-id')
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
