@@ -1,3 +1,4 @@
+import UpdateUser from '@universal-packages/authentication/UpdateUser.universal-auth-dynamic'
 import UserFromEmailDynamic from '@universal-packages/authentication/default-module/UserFromEmail.universal-auth-dynamic'
 
 import { initialize } from '../../src'
@@ -11,9 +12,10 @@ describe('DefaultModuleController', (): void => {
     describe('when a successful update happens', (): void => {
       it('returns ok and the rendered user data', async (): Promise<void> => {
         const user = { id: 99, email: 'david@universal-packages.com' }
-        await runExpressControllers(user)
+        await runExpressControllers(user, true)
 
         dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, user)
+        dynamicApiJest.mockDynamicReturnValue(UpdateUser, user)
 
         await fPatch('authentication/update-email-password', { email: 'new@email.com' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
@@ -47,6 +49,7 @@ describe('DefaultModuleController', (): void => {
         await runExpressControllers(user)
 
         dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, user)
+        dynamicApiJest.mockDynamicReturnValue(UpdateUser, user)
 
         await fPatch('authentication/update-email-password', { email: undefined })
         expect(fResponse).toHaveReturnedWithStatus('OK')
