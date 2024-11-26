@@ -1,11 +1,4 @@
-import {
-  Authentication,
-  DefaultModuleDynamicNames,
-  EmailPasswordOneTimePasswordPayload,
-  EmailPasswordPayload,
-  EmailPayload,
-  UpdateEmailPasswordPayload
-} from '@universal-packages/authentication'
+import { EmailPasswordOneTimePasswordPayload, EmailPasswordPayload, EmailPayload, UpdateEmailPasswordPayload } from '@universal-packages/authentication'
 import { BaseController } from '@universal-packages/express-controllers'
 
 import { RegisterAuthenticationController, RegisterAuthenticationModuleAction } from '../decorators'
