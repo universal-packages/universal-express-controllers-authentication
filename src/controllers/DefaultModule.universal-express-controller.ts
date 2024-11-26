@@ -53,7 +53,7 @@ export default class DefaultModuleController extends BaseController {
         this.status('ACCEPTED')
         break
       case 'success':
-        this.status('OK')
+        this.json({ status: 'success' })
     }
   }
 

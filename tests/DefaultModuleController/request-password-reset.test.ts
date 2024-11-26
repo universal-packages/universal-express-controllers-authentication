@@ -17,6 +17,7 @@ describe('DefaultModuleController', (): void => {
         await fPut('authentication/request-password-reset', { email: 'email' })
 
         expect(fResponse).toHaveReturnedWithStatus('OK')
+        expect(fResponseBody).toEqual({ status: 'success' })
       })
     })
 
