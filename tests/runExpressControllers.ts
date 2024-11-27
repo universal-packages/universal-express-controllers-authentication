@@ -11,7 +11,7 @@ global.runExpressControllers = async function runExpressControllers(user?: Recor
   expressControllers = new ExpressControllers({ appLocation: './tests/__fixtures__', port: fDefaultPort })
 
   if (user) {
-    expressControllers.expressControllers.use((request: Request, _response: Response, next: NextFunction) => {
+    expressControllers.expressInstance.use((request: Request, _response: Response, next: NextFunction) => {
       request['user'] = user
       next()
     })
