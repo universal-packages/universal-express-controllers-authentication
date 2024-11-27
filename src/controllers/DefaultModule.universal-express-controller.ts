@@ -134,7 +134,7 @@ export default class DefaultModuleController extends BaseController {
         this.status('BAD_REQUEST').json(result)
         break
       case 'success':
-        this.json(result)
+        this.json({ status: 'success' })
     }
   }
 }
