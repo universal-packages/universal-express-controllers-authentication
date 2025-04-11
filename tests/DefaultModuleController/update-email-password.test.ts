@@ -30,7 +30,7 @@ describe('DefaultModuleController', (): void => {
 
         await fPatch('authentication/update-email-password', { password: 'new' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
-        expect(fResponseBody).toEqual({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
+        expect(fResponseBody).toEqual({ status: 'failure', validation: { errors: { password: ['password-should-be-right-sized'] }, valid: false } })
       })
     })
 

@@ -43,7 +43,7 @@ describe('DefaultModuleController', (): void => {
 
         await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123, password: 'short' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
-        expect(fResponseBody).toEqual({ status: 'failure', validation: { errors: { password: ['password-out-of-size'] }, valid: false } })
+        expect(fResponseBody).toEqual({ status: 'failure', validation: { errors: { password: ['password-should-be-right-sized'] }, valid: false } })
       })
     })
 

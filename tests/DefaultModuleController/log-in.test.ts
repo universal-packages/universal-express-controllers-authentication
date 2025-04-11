@@ -16,7 +16,7 @@ describe('DefaultModuleController', (): void => {
         dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, { id: 99, email: 'david@universal-packages.com' })
         dynamicApiJest.mockDynamicReturnValue(DoPasswordsMatch, true)
 
-        await fPost('authentication/log-in', { email: 'email', password: 'password' })
+        await fPost('authentication/log-in', { email: 'email@email.com', password: 'password' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
         expect(fResponseBody).toEqual({ status: 'success', user: { id: 99, email: 'david@universal-packages.com' }, sessionToken: '' })
       })
@@ -26,7 +26,7 @@ describe('DefaultModuleController', (): void => {
       it('returns bad request', async (): Promise<void> => {
         await runExpressControllers()
 
-        await fPost('authentication/log-in', { email: 'email', password: 'nop' })
+        await fPost('authentication/log-in', { email: 'email@email.com', password: 'thisisnotthepassword' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
         expect(fResponseBody).toEqual({ status: 'failure', message: 'invalid-credentials' })
       })
