@@ -16,7 +16,7 @@ describe('DefaultModuleController', (): void => {
         dynamicApiJest.mockDynamicReturnValue(VerifyOneTimePassword, true)
         dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, { id: 99, email: 'david@universal-packages.com' })
 
-        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123, password: 'new-password' })
+        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123465, password: 'new-password' })
         expect(fResponse).toHaveReturnedWithStatus('OK')
         expect(fResponseBody).toEqual({ status: 'success' })
       })
@@ -28,7 +28,7 @@ describe('DefaultModuleController', (): void => {
 
         dynamicApiJest.mockDynamicReturnValue(VerifyOneTimePassword, false)
 
-        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123, password: 'short' })
+        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123456, password: 'real-password' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
         expect(fResponseBody).toEqual({ status: 'failure', message: 'invalid-one-time-password' })
       })
@@ -41,7 +41,7 @@ describe('DefaultModuleController', (): void => {
         dynamicApiJest.mockDynamicReturnValue(VerifyOneTimePassword, true)
         dynamicApiJest.mockDynamicReturnValue(UserFromEmailDynamic, { id: 99, email: 'david@universal-packages.com' })
 
-        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123, password: 'short' })
+        await fPut('authentication/verify-password-reset', { email: 'email', oneTimePassword: 123456, password: 'short' })
         expect(fResponse).toHaveReturnedWithStatus('BAD_REQUEST')
         expect(fResponseBody).toEqual({ status: 'failure', validation: { errors: { password: ['password-should-be-right-sized'] }, valid: false } })
       })
